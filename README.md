@@ -76,6 +76,12 @@ export class MyService {
 }
 ```
 
+### /metrics
+
+At the moment, no way to configure the `/metrics` path.
+PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
+the moment.
+
 ## TODO
 
 - Update readme
@@ -84,6 +90,7 @@ export class MyService {
   - Summary
 - Manage registries
 - Tests
+- Give possibility to custom metric endpoint
 
 ## License
 
