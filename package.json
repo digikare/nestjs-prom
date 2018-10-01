@@ -31,5 +31,17 @@
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.3.3"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digikare/nestjs-prom.git"
+  },
+  "keywords": [
+    "nestjs",
+    "promotheus"
+  ],
+  "bugs": {
+    "url": "https://github.com/digikare/nestjs-prom/issues"
+  },
+  "homepage": "https://github.com/digikare/nestjs-prom#readme"
 }
