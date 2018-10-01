@@ -78,6 +78,10 @@ export class MyService {
 
 ## TODO
 
+- Update readme
+  - Gauge
+  - Histogram
+  - Summary
 - Manage registries
 
 ## License
