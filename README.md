@@ -7,7 +7,7 @@ A promotheus module for Nest.
 ## Installation
 
 ```bash
-$ npm install --save @digikare/nestjs-prom
+$ npm install --save @digikare/nestjs-prom prom-client
 ```
 
 ## How to use
@@ -83,6 +83,7 @@ export class MyService {
   - Histogram
   - Summary
 - Manage registries
+- Tests
 
 ## License
 
