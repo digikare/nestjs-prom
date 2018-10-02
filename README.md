@@ -2,7 +2,7 @@
 
 ## Description
 
-A promotheus module for Nest.
+A prometheus module for Nest.
 
 ## Installation
 
@@ -47,6 +47,27 @@ import { PromModule, MetricType } from '@digikare/nest-prom';
           name: 'my_counter',
           help: 'my_counter a simple counter',
         }
+      },
+      {
+        type: MetricType.Gauge,
+        configuration: {
+          name: 'my_gauge',
+          help: 'my_gauge a simple gauge',
+        }
+      },
+      {
+        type: MetricType.Histogram,
+        configuration: {
+          name: 'my_histogram',
+          help: 'my_histogram a simple histogram',
+        }
+      },
+      {
+        type: MetricType.Summary,
+        configuration: {
+          name: 'my_summary',
+          help: 'my_summary a simple summary',
+        }
       }
     ]),
   ]
@@ -64,6 +85,9 @@ import { InjectCounterMetric, CounterMetric } from '@digikare/nest-prom';
 export class MyService {
   constructor(
     @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric,
+    @InjectCounterMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric,
+    @InjectCounterMetric('my_histogram') private readonly _histogramMetric: HistogramMetric,
+    @InjectCounterMetric('my_summary') private readonly _summaryMetric: SummaryMetric,
   ) {}
 
   doStuff() {
