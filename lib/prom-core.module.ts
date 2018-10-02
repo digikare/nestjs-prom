@@ -21,6 +21,7 @@ export class PromCoreModule {
   ): DynamicModule {
 
     const {
+      withDefaultsMetrics,
       registryName,
       timeout,
       prefix,
@@ -39,14 +40,16 @@ export class PromCoreModule {
     const clientProvider = {
       provide: promRegistryName,
       useFactory: () => {
-        const defaultMetricsOptions: {[key: string]: any} = {};
-        if (timeout) {
-          defaultMetricsOptions.timeout = timeout;
+        if (withDefaultsMetrics) {
+          const defaultMetricsOptions: {[key: string]: any} = {};
+          if (timeout) {
+            defaultMetricsOptions.timeout = timeout;
+          }
+          if (prefix) {
+            defaultMetricsOptions.prefix = prefix;
+          }
+          client.collectDefaultMetrics(defaultMetricsOptions);
         }
-        if (prefix) {
-          defaultMetricsOptions.prefix = prefix;
-        }
-        client.collectDefaultMetrics(defaultMetricsOptions);
         return client;
       }
     }
