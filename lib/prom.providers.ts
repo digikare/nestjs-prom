@@ -20,19 +20,16 @@ export function createPromCounterProvider(
   return {
     provide: getMetricToken('Counter', configuration.name),
     useFactory: (registry: Registry) => {
-
       const obj = new Counter({
         ...configuration,
         registers: [registry]
       });
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
       return obj;
     },
     inject: [
       registryName === DEFAULT_PROM_REGISTRY ?
         DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
-    ], // use to inject register
+    ],
   };
 }
 
@@ -47,14 +44,12 @@ export function createPromGaugeProvider(
         ...configuration,
         registers: [registry]
       });
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
       return obj;
     },
     inject: [
       registryName === DEFAULT_PROM_REGISTRY ?
         DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
-    ], // use to inject register
+    ],
   };
 }
 
@@ -69,14 +64,12 @@ export function createPromHistogramProvider(
         ...configuration,
         registers: [registry]
       });
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
       return obj;
     },
     inject: [
       registryName === DEFAULT_PROM_REGISTRY ?
         DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
-    ], // use to inject register
+    ],
   };
 }
 
@@ -91,13 +84,11 @@ export function createPromSummaryProvider(
         ...configuration,
         registers: [registry]
       });
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
       return obj;
     },
     inject: [
       registryName === DEFAULT_PROM_REGISTRY ?
         DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
-    ], // use to inject register
+    ],
   };
 }

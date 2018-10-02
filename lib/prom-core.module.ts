@@ -34,7 +34,7 @@ export class PromCoreModule {
       getRegistryName(registryName)
       : DEFAULT_PROM_REGISTRY;
 
-    const clientNameProvider = {
+    const promRegistryNameProvider = {
       provide: PROM_REGISTRY_NAME,
       useValue: promRegistryName,
     }
@@ -69,7 +69,7 @@ export class PromCoreModule {
     return {
       module: PromCoreModule,
       providers: [
-        clientNameProvider,
+        promRegistryNameProvider,
         registryProvider,
       ],
       exports: [
