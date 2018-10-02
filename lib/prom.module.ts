@@ -11,13 +11,24 @@ export class PromModule {
   static forRoot(
     options: PromModuleOptions = {},
   ): DynamicModule {
-    return {
+
+    const {
+      withDefaultController,
+      ...promOptions
+    } = options;
+
+    const moduleForRoot = {
       module: PromModule,
       imports: [PromCoreModule.forRoot(options)],
-      controllers: [
-        PromController,
-      ],
+      controllers: [],
+    };
+
+    // default push default controller
+    if (withDefaultController !== false) {
+      moduleForRoot.controllers.push(PromController);
     }
+
+    return moduleForRoot;
   }
 
   static forMetrics(
