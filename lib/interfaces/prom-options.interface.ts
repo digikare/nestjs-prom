@@ -4,6 +4,7 @@ export interface PromModuleOptions {
 
   withDefaultsMetrics?: boolean;
   withDefaultController?: boolean;
+  useHttpCounterMiddleware?: boolean;
 
   registryName?: string;
   timeout?: number;

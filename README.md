@@ -100,9 +100,10 @@ export class MyService {
 }
 ```
 
-### /metrics
+### Metric endpoint
 
-At the moment, no way to configure the `/metrics` path.
+At the moment, no way to configure the `/metrics` endpoint path.
+
 PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
 the moment.
 

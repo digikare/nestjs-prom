@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { PromModuleOptions } from './interfaces';
-import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME } from './prom.constants';
+import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
 
 import * as client from 'prom-client';
 import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
-import { getRegistryName } from './common/prom.utils';
+import { getRegistryName, getOptionsName } from './common/prom.utils';
 
 @Global()
 @Module({})
@@ -37,6 +37,15 @@ export class PromCoreModule {
     const promRegistryNameProvider = {
       provide: PROM_REGISTRY_NAME,
       useValue: promRegistryName,
+    }
+
+    // const promOptionName = registryName ?
+    //   getOptionsName(registryName)
+    //   : DEFAULT_PROM_OPTIONS;
+
+    const promRegistryOptionsProvider = {
+      provide: DEFAULT_PROM_OPTIONS,
+      useValue: options,
     }
 
     const registryProvider = {
@@ -70,6 +79,7 @@ export class PromCoreModule {
       module: PromCoreModule,
       providers: [
         promRegistryNameProvider,
+        promRegistryOptionsProvider,
         registryProvider,
       ],
       exports: [
