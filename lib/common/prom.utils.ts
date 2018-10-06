@@ -6,3 +6,7 @@ export function getMetricToken(type: string, name: string) {
 export function getRegistryName(name: string) {
   return `${name}PromRegistry`;
 }
+
+export function getOptionsName(name: string) {
+  return `${name}PromOptions`;
+}
