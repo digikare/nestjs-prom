@@ -113,7 +113,7 @@ the moment.
 
 - `withDefaultsMetrics: boolean (default true)` enable defaultMetrics provided by prom-client
 - `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
-- `useHttpCounterMiddleware: boolean (default false)` register http_requests counter
+- `useHttpCounterMiddleware: boolean (default false)` register http_requests_total counter
 
 ## Auth/security
 

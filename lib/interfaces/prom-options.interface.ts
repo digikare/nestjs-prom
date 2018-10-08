@@ -15,7 +15,7 @@ export interface PromModuleOptions {
   withDefaultController?: boolean;
 
   /**
-   * Create automatically http_requests_in counter
+   * Create automatically http_requests_total counter
    */
   useHttpCounterMiddleware?: boolean;
 

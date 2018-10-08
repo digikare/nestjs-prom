@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - new options `PromModule.forRoot`
   - `withDefaultsMetrics: boolean (default true)` enable defaultMetrics provided by prom-client
   - `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
-  - `useHttpCounterMiddleware: boolean (default false)` register http_requests counter
-- Provide `http_requests` counter if `useHttpCounterMiddleware` enabled
+  - `useHttpCounterMiddleware: boolean (default false)` register http_requests_total counter
+- Provide `http_requests_total` counter if `useHttpCounterMiddleware` enabled
   - ignore `/metrics`
   - ignore `/favicon.ico`
 - Provide default counter with `/metrics` endpoint if `withDefaultController` enabled
