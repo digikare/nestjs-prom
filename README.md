@@ -30,7 +30,7 @@ import { PromModule } from '@digikare/nestjs-prom';
 export class ApplicationModule {}
 ```
 
-### Setup a counter metric
+### Setup metric
 
 In your module, use `forMetrics()` method to define the metrics needed.
 
@@ -75,7 +75,7 @@ import { PromModule, MetricType } from '@digikare/nest-prom';
 export class MyModule
 ```
 
-And you can use `@InjectCounterMetric()` decorator
+And you can use `@InjectCounterMetric()` decorator to get the metrics
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -107,6 +107,20 @@ At the moment, no way to configure the `/metrics` endpoint path.
 PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
 the moment.
 
+## API
+
+### PromModule.forRoot() options
+
+- `withDefaultsMetrics: boolean (default true)` enable defaultMetrics provided by prom-client
+- `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
+- `useHttpCounterMiddleware: boolean (default false)` register http_requests counter
+
+## Auth/security
+
+I do not provide any auth/security for `/metrics` endpoints.
+This is not the aim of this module, but depending of the auth strategy, you can
+apply a middleware on `/metrics` to secure it.
+
 ## TODO
 
 - Update readme
@@ -116,6 +130,9 @@ the moment.
 - Manage registries
 - Tests
 - Give possibility to custom metric endpoint
+- Adding example on how to secure `/metrics` endpoint
+  - secret
+  - jwt
 
 ## License
 
