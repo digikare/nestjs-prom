@@ -16,8 +16,22 @@ export class InboundMiddleware implements NestMiddleware {
   // }
 
   resolve(): MiddlewareFunction {
-    return (req: Request, res, next) => {
-      console.log(`InboundMiddleware::resolve()`);
+    return (req, res, next) => {
+      console.log(`InboundMiddleware::resolve() - ${req.baseUrl}`);
+
+      // ignore favicon
+      if (req.baseUrl == '/favicon.ico') {
+        next();
+        return ;
+      }
+
+      // ignore metrics itself
+      // TODO: need improvment to check correctly our current controller
+      if (req.baseUrl.match(/\/metrics(\?.*?)?$/)) {
+        next();
+        return ;
+      }
+
       if (this._counter) {
         this._counter.labels(req.method).inc(1, new Date());
       }
