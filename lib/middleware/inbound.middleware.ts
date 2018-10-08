@@ -12,8 +12,6 @@ export class InboundMiddleware implements NestMiddleware {
 
   resolve(): MiddlewareFunction {
     return (req, res, next) => {
-      console.log(`InboundMiddleware::resolve() - ${req.baseUrl}`);
-
       // ignore favicon
       if (req.baseUrl == '/favicon.ico') {
         next();
