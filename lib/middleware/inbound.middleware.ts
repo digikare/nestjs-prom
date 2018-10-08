@@ -7,29 +7,32 @@ import { ModuleRef } from "@nestjs/core";
 export class InboundMiddleware implements NestMiddleware {
 
   constructor(
-    @InjectCounterMetric('http_requests_in') private readonly _counter: Counter,
+    @InjectCounterMetric('http_requests') private readonly _counter: Counter,
   ) {}
 
   resolve(): MiddlewareFunction {
     return (req, res, next) => {
+
+      const url = req.baseUrl;
+      const method = req.method;
+
+      // process the request
+      next();
+
       // ignore favicon
-      if (req.baseUrl == '/favicon.ico') {
-        next();
+      if (url == '/favicon.ico') {
         return ;
       }
 
       // ignore metrics itself
       // TODO: need improvment to check correctly our current controller
-      if (req.baseUrl.match(/\/metrics(\?.*?)?$/)) {
-        next();
+      if (url.match(/\/metrics(\?.*?)?$/)) {
         return ;
       }
 
-      if (this._counter) {
-        this._counter.labels(req.method).inc(1, new Date());
-      }
-      next();
+      // update counter
+      this._counter.labels(method, res.statusCode.toString() || "500").inc(1, new Date());
+
     }
   }
-
 }

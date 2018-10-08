@@ -36,9 +36,9 @@ export class PromModule {
     // if want to use the http counter
     if (useHttpCounterMiddleware) {
       const inboundProvider = createPromCounterProvider({
-        name: 'http_requests_in',
-        help: 'http_requests_in Number of inbound request',
-        labelNames: ['method']
+        name: 'http_requests',
+        help: 'http_requests Number of inbound request',
+        labelNames: ['method', 'status']
       });
 
       moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];
