@@ -2,7 +2,7 @@
 
 ## Description
 
-A promotheus module for Nest.
+A prometheus module for Nest.
 
 ## Installation
 
@@ -30,7 +30,7 @@ import { PromModule } from '@digikare/nestjs-prom';
 export class ApplicationModule {}
 ```
 
-### Setup a counter metric
+### Setup metric
 
 In your module, use `forMetrics()` method to define the metrics needed.
 
@@ -47,6 +47,27 @@ import { PromModule, MetricType } from '@digikare/nest-prom';
           name: 'my_counter',
           help: 'my_counter a simple counter',
         }
+      },
+      {
+        type: MetricType.Gauge,
+        configuration: {
+          name: 'my_gauge',
+          help: 'my_gauge a simple gauge',
+        }
+      },
+      {
+        type: MetricType.Histogram,
+        configuration: {
+          name: 'my_histogram',
+          help: 'my_histogram a simple histogram',
+        }
+      },
+      {
+        type: MetricType.Summary,
+        configuration: {
+          name: 'my_summary',
+          help: 'my_summary a simple summary',
+        }
       }
     ]),
   ]
@@ -54,7 +75,7 @@ import { PromModule, MetricType } from '@digikare/nest-prom';
 export class MyModule
 ```
 
-And you can use `@InjectCounterMetric()` decorator
+And you can use `@InjectCounterMetric()` decorator to get the metrics
 
 ```typescript
 import { Injectable } from '@nestjs/common';
@@ -64,6 +85,9 @@ import { InjectCounterMetric, CounterMetric } from '@digikare/nest-prom';
 export class MyService {
   constructor(
     @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric,
+    @InjectCounterMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric,
+    @InjectCounterMetric('my_histogram') private readonly _histogramMetric: HistogramMetric,
+    @InjectCounterMetric('my_summary') private readonly _summaryMetric: SummaryMetric,
   ) {}
 
   doStuff() {
@@ -76,11 +100,26 @@ export class MyService {
 }
 ```
 
-### /metrics
+### Metric endpoint
 
-At the moment, no way to configure the `/metrics` path.
+At the moment, no way to configure the `/metrics` endpoint path.
+
 PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
 the moment.
+
+## API
+
+### PromModule.forRoot() options
+
+- `withDefaultsMetrics: boolean (default true)` enable defaultMetrics provided by prom-client
+- `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
+- `useHttpCounterMiddleware: boolean (default false)` register http_requests counter
+
+## Auth/security
+
+I do not provide any auth/security for `/metrics` endpoints.
+This is not the aim of this module, but depending of the auth strategy, you can
+apply a middleware on `/metrics` to secure it.
 
 ## TODO
 
@@ -91,6 +130,9 @@ the moment.
 - Manage registries
 - Tests
 - Give possibility to custom metric endpoint
+- Adding example on how to secure `/metrics` endpoint
+  - secret
+  - jwt
 
 ## License
 

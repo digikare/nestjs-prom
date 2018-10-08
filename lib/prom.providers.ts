@@ -1,64 +1,94 @@
 import { DEFAULT_PROM_REGISTRY } from "./prom.constants";
-import * as client from 'prom-client';
+import {
+  Counter,
+  CounterConfiguration,
+  GaugeConfiguration,
+  Gauge,
+  HistogramConfiguration,
+  Histogram,
+  SummaryConfiguration,
+  Summary,
+  Registry,
+} from 'prom-client';
 import { Provider } from "@nestjs/common";
-import { getMetricToken } from "./common/prom.utils";
+import { getMetricToken, getRegistryName } from "./common/prom.utils";
 
 export function createPromCounterProvider(
-  configuration: client.CounterConfiguration
+  configuration: CounterConfiguration,
+  registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
     provide: getMetricToken('Counter', configuration.name),
-    useFactory: () => {
-      const obj = new client.Counter(configuration);
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
+    useFactory: (registry: Registry) => {
+      const obj = new Counter({
+        ...configuration,
+        registers: [registry]
+      });
       return obj;
     },
-    inject: [], // use to inject register
+    inject: [
+      registryName === DEFAULT_PROM_REGISTRY ?
+        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+    ],
   };
 }
 
 export function createPromGaugeProvider(
-  configuration: client.GaugeConfiguration
+  configuration: GaugeConfiguration,
+  registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
     provide: getMetricToken('Gauge', configuration.name),
-    useFactory: () => {
-      const obj = new client.Gauge(configuration);
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
+    useFactory: (registry: Registry) => {
+      const obj = new Gauge({
+        ...configuration,
+        registers: [registry]
+      });
       return obj;
     },
-    inject: [], // use to inject register
+    inject: [
+      registryName === DEFAULT_PROM_REGISTRY ?
+        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+    ],
   };
 }
 
 export function createPromHistogramProvider(
-  configuration: client.HistogramConfiguration
+  configuration: HistogramConfiguration,
+  registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
     provide: getMetricToken('Histogram', configuration.name),
-    useFactory: () => {
-      const obj = new client.Histogram(configuration);
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
+    useFactory: (registry: Registry) => {
+      const obj = new Histogram({
+        ...configuration,
+        registers: [registry]
+      });
       return obj;
     },
-    inject: [], // use to inject register
+    inject: [
+      registryName === DEFAULT_PROM_REGISTRY ?
+        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+    ],
   };
 }
 
 export function createPromSummaryProvider(
-  configuration: client.SummaryConfiguration
+  configuration: SummaryConfiguration,
+  registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
     provide: getMetricToken('Summary', configuration.name),
-    useFactory: () => {
-      const obj = new client.Summary(configuration);
-      // to merge register
-      // client.Registry.merge([registry, client.register]);
+    useFactory: (registry: Registry) => {
+      const obj = new Summary({
+        ...configuration,
+        registers: [registry]
+      });
       return obj;
     },
-    inject: [], // use to inject register
+    inject: [
+      registryName === DEFAULT_PROM_REGISTRY ?
+        DEFAULT_PROM_REGISTRY : getRegistryName(registryName),
+    ],
   };
 }

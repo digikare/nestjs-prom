@@ -1,9 +1,11 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule, NestModule, MiddlewareConsumer, Inject, RequestMethod } from '@nestjs/common';
 import { PromCoreModule } from './prom-core.module';
 import { PromModuleOptions, MetricType, MetricTypeConfigurationInterface } from './interfaces';
 import { createPromCounterProvider, createPromGaugeProvider, createPromHistogramProvider, createPromSummaryProvider } from './prom.providers';
 import * as client from 'prom-client';
 import { PromController } from './prom.controller';
+import { InboundMiddleware } from './middleware/inbound.middleware';
+import { DEFAULT_PROM_OPTIONS } from './prom.constants';
 
 @Module({})
 export class PromModule {
@@ -11,13 +13,39 @@ export class PromModule {
   static forRoot(
     options: PromModuleOptions = {},
   ): DynamicModule {
-    return {
+
+    const {
+      withDefaultController,
+      useHttpCounterMiddleware,
+      ...promOptions
+    } = options;
+
+    const moduleForRoot: DynamicModule = {
       module: PromModule,
       imports: [PromCoreModule.forRoot(options)],
-      controllers: [
-        PromController,
-      ],
+      controllers: [],
+      exports: [],
+      providers: [],
+    };
+
+    // default push default controller
+    if (withDefaultController !== false) {
+      moduleForRoot.controllers = [...moduleForRoot.controllers, PromController];
     }
+
+    // if want to use the http counter
+    if (useHttpCounterMiddleware) {
+      const inboundProvider = createPromCounterProvider({
+        name: 'http_requests',
+        help: 'http_requests Number of inbound request',
+        labelNames: ['method', 'status']
+      });
+
+      moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];
+      moduleForRoot.exports = [...moduleForRoot.exports, inboundProvider];
+    }
+
+    return moduleForRoot;
   }
 
   static forMetrics(

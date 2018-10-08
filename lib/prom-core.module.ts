@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { PromModuleOptions } from './interfaces';
-import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME } from './prom.constants';
+import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
 
 import * as client from 'prom-client';
+import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
+import { getRegistryName, getOptionsName } from './common/prom.utils';
 
 @Global()
 @Module({})
@@ -21,43 +23,68 @@ export class PromCoreModule {
   ): DynamicModule {
 
     const {
+      withDefaultsMetrics,
       registryName,
       timeout,
       prefix,
       ...promOptions
     } = options;
 
-    const promRegistryName = registryName
-      ? `${registryName}PromClient`
+    const promRegistryName = registryName ?
+      getRegistryName(registryName)
       : DEFAULT_PROM_REGISTRY;
 
-    const clientNameProvider = {
+    const promRegistryNameProvider = {
       provide: PROM_REGISTRY_NAME,
       useValue: promRegistryName,
     }
 
-    const clientProvider = {
+    // const promOptionName = registryName ?
+    //   getOptionsName(registryName)
+    //   : DEFAULT_PROM_OPTIONS;
+
+    const promRegistryOptionsProvider = {
+      provide: DEFAULT_PROM_OPTIONS,
+      useValue: options,
+    }
+
+    const registryProvider = {
       provide: promRegistryName,
-      useFactory: () => {
-        const defaultMetricsOptions: {[key: string]: any} = {};
-        if (timeout) {
-          defaultMetricsOptions.timeout = timeout;
+      useFactory: (): Registry => {
+
+        let registry = client.register;
+        if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
+          registry = new Registry();
         }
-        if (prefix) {
-          defaultMetricsOptions.prefix = prefix;
+
+        if (withDefaultsMetrics !== false) {
+          const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
+            register: registry,
+          };
+          if (timeout) {
+            defaultMetricsOptions.timeout = timeout;
+          }
+          if (prefix) {
+            defaultMetricsOptions.prefix = prefix;
+          }
+          collectDefaultMetrics(defaultMetricsOptions);
         }
-        client.collectDefaultMetrics(defaultMetricsOptions);
-        return client;
-      }
+
+        return registry;
+      },
+
     }
 
     return {
       module: PromCoreModule,
       providers: [
-        clientNameProvider,
-        clientProvider,
+        promRegistryNameProvider,
+        promRegistryOptionsProvider,
+        registryProvider,
       ],
-      exports: [],
+      exports: [
+        registryProvider,
+      ],
     };
   }
 
