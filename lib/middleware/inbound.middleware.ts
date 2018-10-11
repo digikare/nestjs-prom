@@ -16,9 +16,6 @@ export class InboundMiddleware implements NestMiddleware {
       const url = req.baseUrl;
       const method = req.method;
 
-      // process the request
-      next();
-
       // ignore favicon
       if (url == '/favicon.ico') {
         return ;
@@ -30,9 +27,9 @@ export class InboundMiddleware implements NestMiddleware {
         return ;
       }
 
-      // update counter
-      this._counter.labels(method, res.statusCode.toString() || "500", url).inc(1, new Date());
+      this._counter.labels(method).inc(1, new Date());
 
+      next();
     }
   }
 }
