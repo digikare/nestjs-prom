@@ -18,12 +18,14 @@ export class InboundMiddleware implements NestMiddleware {
 
       // ignore favicon
       if (url == '/favicon.ico') {
+        next();
         return ;
       }
 
       // ignore metrics itself
       // TODO: need improvment to check correctly our current controller
       if (url.match(/\/metrics(\?.*?)?$/)) {
+        next();
         return ;
       }
 
