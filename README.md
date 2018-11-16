@@ -79,15 +79,24 @@ And you can use `@InjectCounterMetric()` decorator to get the metrics
 
 ```typescript
 import { Injectable } from '@nestjs/common';
-import { InjectCounterMetric, CounterMetric } from '@digikare/nest-prom';
+import {
+  InjectCounterMetric,
+  InjectGaugeMetric,
+  InjectHistogramMetric,
+  InjectSummaryMetric,
+  CounterMetric,
+  GaugeMetric,
+  HistogramMetric,
+  SummaryMetric,
+} from '@digikare/nest-prom';
 
 @Injectable()
 export class MyService {
   constructor(
     @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric,
-    @InjectCounterMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric,
-    @InjectCounterMetric('my_histogram') private readonly _histogramMetric: HistogramMetric,
-    @InjectCounterMetric('my_summary') private readonly _summaryMetric: SummaryMetric,
+    @InjectGaugeMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric,
+    @InjectHistogramMetric('my_histogram') private readonly _histogramMetric: HistogramMetric,
+    @InjectSummaryMetric('my_summary') private readonly _summaryMetric: SummaryMetric,
   ) {}
 
   doStuff() {
