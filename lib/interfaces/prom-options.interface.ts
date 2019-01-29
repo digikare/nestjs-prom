@@ -25,4 +25,6 @@ export interface PromModuleOptions {
   defaultLabels?: {
     [key: string]: any,
   };
+
+  customUrl?: string;
 }
