@@ -111,9 +111,25 @@ export class MyService {
 
 ### Metric endpoint
 
-At the moment, no way to configure the `/metrics` endpoint path.
+The default metrics endpoint is `/metrics` this can be changed with the customUrl option
 
-PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
+```ts
+@Module({
+  imports: [
+    PromModule.forRoot({
+      defaultLabels: {
+        app: 'my_app',
+      },
+      customUrl: 'custom/uri',
+    }),
+  ],
+})
+export class MyModule
+```
+
+Now your metrics can be found at `/custom/uri`.
+
+> PS: If you have a global prefix, the path will be `{globalPrefix}/metrics` for
 the moment.
 
 ## API
