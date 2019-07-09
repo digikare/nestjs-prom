@@ -1,7 +1,7 @@
 {
-  "name": "@digikare/nestjs-prom",
+  "name": "@panterazar/nestjs-prom",
   "version": "0.0.5",
-  "description": "A promotheus module for nestjs",
+  "description": "A promotheus module for nestjs, updated to work with nestjs 6",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -13,7 +13,7 @@
     "prepublish:next": "npm run build",
     "publish:next": "npm publish --access public --tag next"
   },
-  "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
+  "author": "Tieu-Philippe KHIM <pkhim@digikare.com>, Michael Yankelev",
   "license": "MIT",
   "devDependencies": {
     "@nestjs/common": "6.3.2",
@@ -34,14 +34,14 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digikare/nestjs-prom.git"
+    "url": "git+https://github.com/fsm1/nestjs-prom.git"
   },
   "keywords": [
     "nestjs",
     "promotheus"
   ],
   "bugs": {
-    "url": "https://github.com/digikare/nestjs-prom/issues"
+    "url": "https://github.com/fsm1/nestjs-prom/issues"
   },
-  "homepage": "https://github.com/digikare/nestjs-prom#readme"
+  "homepage": "https://github.com/fsm1/nestjs-prom#readme"
 }
