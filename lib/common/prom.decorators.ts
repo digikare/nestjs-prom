@@ -16,8 +16,8 @@ export const PromMethodCounter = () => {
     return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
         const className = target.constructor.name;
         const counterMetric = findOrCreateCounter({
-            name: `${className}_${propertyKey.toString()}_method_counter`,
-            help: `${className}#${propertyKey.toString()} called counter`,
+            name: `app_${className}_${propertyKey.toString()}_calls_total`,
+            help: `app_${className}#${propertyKey.toString()} called total`,
         });
         const methodFunc = descriptor.value;
         descriptor.value = function (...args) {
@@ -34,8 +34,8 @@ export const PromMethodCounter = () => {
  */
 export const PromInstanceCounter = <T extends { new(...args: any[]): {} }>(ctor: T) => {
     const counterMetric = findOrCreateCounter({
-        name: `${ctor.name}_instance_counter`,
-        help: `${ctor.name} object instances counter`,
+        name: `app_${ctor.name}_instances_total`,
+        help: `app_${ctor.name} object instances total`,
     });
     return class extends ctor {
         constructor(...args) {
