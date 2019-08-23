@@ -43,7 +43,7 @@ export class PromModule {
       const inboundProvider = createPromCounterProvider({
         name: 'http_requests_total',
         help: 'http_requests_total Number of inbound request',
-        labelNames: ['method']
+        labelNames: ['method', 'status', 'path']
       });
 
       moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];

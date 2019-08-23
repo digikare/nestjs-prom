@@ -17,10 +17,12 @@ export const findOrCreateMetric = ({
   name,
   type,
   help,
+  labelNames,
 }: {
   name: string;
   type: string;
   help?: string;
+  labelNames?: string[];
 }): client.Metric => {
 
   let metric: client.Metric = client.register.getSingleMetric(name);
@@ -28,6 +30,7 @@ export const findOrCreateMetric = ({
     return new client.Counter({
       name: name,
       help: help || `${name} ${type}`,
+      labelNames,
     });
   }
 
@@ -44,55 +47,67 @@ export const findOrCreateMetric = ({
 export const findOrCreateCounter = ({
   name,
   help,
+  labelNames,
 }: {
-  name: string,
-  help?: string,
+  name: string;
+  help?: string;
+    labelNames?: string[];
 }): client.Counter => {
   return findOrCreateMetric({
     name,
     help,
     type: `Counter`,
+    labelNames,
   }) as client.Counter;
 }
 
 export const findOrCreateGauge = ({
   name,
   help,
+  labelNames,
 }: {
-  name: string,
-  help?: string,
+  name: string;
+  help?: string;
+  labelNames?: string[];
 }): client.Gauge => {
   return findOrCreateMetric({
     name,
     help,
     type: `Gauge`,
+    labelNames,
   }) as client.Gauge;
 }
 
 export const findOrCreateHistogram = ({
   name,
   help,
+  labelNames,
 }: {
-  name: string,
-  help?: string,
+  name: string;
+  help?: string;
+  labelNames?: string[];
 }): client.Histogram => {
   return findOrCreateMetric({
     name,
     help,
     type: `Histogram`,
+    labelNames,
   }) as client.Histogram;
 }
 
 export const findOrCreateSummary = ({
   name,
   help,
+  labelNames,
 }: {
-  name: string,
-  help?: string,
+  name: string;
+  help?: string;
+  labelNames?: string[];
 }): client.Summary => {
   return findOrCreateMetric({
     name,
     help,
     type: `Summary`,
+    labelNames,
   }) as client.Summary;
 }
