@@ -109,6 +109,31 @@ export class MyService {
 }
 ```
 
+### Metric class instances
+
+```typescript
+@PromInstanceCounter
+export class MyClass {
+
+}
+```
+
+Will generate a counter called: `app_MyClass_instances_total`
+
+### Metric method calls
+
+```typescript
+@Injectable()
+export class MyService {
+  @PromMethodCounter
+  doMyStuff() {
+
+  }
+}
+```
+
+Will generate a counter called: `app_MyService_doMyStuff_calls_total`
+
 ### Metric endpoint
 
 At the moment, no way to configure the `/metrics` endpoint path.
