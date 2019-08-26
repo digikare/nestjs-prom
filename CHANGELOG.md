@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.1.0 - 2019-08-28
+
+Bump 0.1.0 target nestjs v5
+
+### Features
+- Add new decorators
+  - @PromMethodCounter
+    - This decorator will auto create a counter and increment everytime when the method is called
+  - @PromInstanceCounter
+    - This decorator will auto create a counter and increment everytime when an instance of a class is created
+
+### Fixes
+- Update packages-lock due of audit
+
 ## 0.0.4 - 2018-10-11
 ### Fixes
 - In middleware, call next() if path is not under monitoring
