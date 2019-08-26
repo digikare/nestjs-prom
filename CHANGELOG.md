@@ -13,8 +13,10 @@ Bump 0.1.0 target nestjs v5
 - Add new decorators
   - @PromMethodCounter
     - This decorator will auto create a counter and increment everytime when the method is called
+    - The counter name format is: `app_{className}_{methodName}_calls_total`
   - @PromInstanceCounter
     - This decorator will auto create a counter and increment everytime when an instance of a class is created
+    - The counter name format is: `app_{className}_instances_total`
 
 ### Fixes
 - Update packages-lock due of audit
