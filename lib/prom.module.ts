@@ -33,7 +33,7 @@ export class PromModule {
 
     // default push default controller
     if (withDefaultController !== false) {
-      moduleForRoot.controllers = [...moduleForRoot.controllers, PromController];
+      moduleForRoot.controllers = [...moduleForRoot.controllers, PromController.forRoot(options.customUrl || 'metrics')];
     }
 
     // if want to use the http counter
