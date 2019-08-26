@@ -6,6 +6,7 @@ import * as client from 'prom-client';
 import { PromController } from './prom.controller';
 import { InboundMiddleware } from './middleware/inbound.middleware';
 import { DEFAULT_PROM_OPTIONS } from './prom.constants';
+import { PromService } from './prom.service';
 
 @Module({})
 export class PromModule {
@@ -24,8 +25,12 @@ export class PromModule {
       module: PromModule,
       imports: [PromCoreModule.forRoot(options)],
       controllers: [],
-      exports: [],
-      providers: [],
+      exports: [
+        PromService,
+      ],
+      providers: [
+        PromService,
+      ],
     };
 
     // default push default controller
@@ -38,7 +43,7 @@ export class PromModule {
       const inboundProvider = createPromCounterProvider({
         name: 'http_requests_total',
         help: 'http_requests_total Number of inbound request',
-        labelNames: ['method']
+        labelNames: ['method', 'status', 'path']
       });
 
       moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];

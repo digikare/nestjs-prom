@@ -1,5 +1,5 @@
 import { Injectable, NestMiddleware, MiddlewareFunction, OnModuleInit } from "@nestjs/common";
-import { Counter } from "prom-client";
+import { Counter, labelValues } from "prom-client";
 import { InjectCounterMetric, getMetricToken } from "../common";
 import { ModuleRef } from "@nestjs/core";
 
@@ -29,7 +29,13 @@ export class InboundMiddleware implements NestMiddleware {
         return ;
       }
 
-      this._counter.labels(method).inc(1, new Date());
+      const labelValues = {
+        method,
+        status: res.statusCode,
+        path: url,
+      };
+
+      this._counter.inc(labelValues, 1, new Date());
 
       next();
     }
