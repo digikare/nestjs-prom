@@ -129,7 +129,6 @@ apply a middleware on `/metrics` to secure it.
   - Summary
 - Manage registries
 - Tests
-- Give possibility to custom metric endpoint
 - Adding example on how to secure `/metrics` endpoint
   - secret
   - jwt
