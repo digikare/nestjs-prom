@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { CounterMetric, InjectCounterMetric } from '../../lib';
+import { PromService } from '../../lib/prom.service';
 
 @Injectable()
 export class AppService {
 
   constructor(
-    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric<string>,
+    private readonly _promService: PromService,
   ) {}
 
   root(): string {
-    this._counterMetric.inc(1);
+    this._promService.getCounter({name: 'test'}).inc(1, new Date());
     return 'Hello World!';
   }
 }

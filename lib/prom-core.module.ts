@@ -37,10 +37,6 @@ export class PromCoreModule {
       useValue: promRegistryName,
     }
 
-    // const promOptionName = registryName ?
-    //   getOptionsName(registryName)
-    //   : DEFAULT_PROM_OPTIONS;
-
     const promRegistryOptionsProvider = {
       provide: DEFAULT_PROM_OPTIONS,
       useValue: options,
@@ -81,11 +77,5 @@ export class PromCoreModule {
         registryProvider,
       ],
     };
-  }
-
-  /**
-   * on destroy
-   */
-  onModuleDestroy() {
   }
 }

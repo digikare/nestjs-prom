@@ -1,13 +1,21 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
-import { Counter } from "prom-client";
-import { InjectCounterMetric } from "../common";
+import { PromService } from '../prom.service';
+import { Counter } from 'prom-client';
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
 
+  private readonly _counter: Counter<string>;
+
   constructor(
-    @InjectCounterMetric('http_requests_total') private readonly _counter: Counter<string>,
-  ) {}
+    private readonly _service: PromService,
+  ) {
+    this._counter = this._service.getCounter({
+      name: 'http_requests_total',
+      help: 'http_requests_total Number of inbound request',
+      labelNames: ['method', 'status', 'path']
+    });
+  }
 
   use (req, res, next) {
 

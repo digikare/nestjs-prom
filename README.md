@@ -32,79 +32,29 @@ export class ApplicationModule {}
 
 ### Setup metric
 
-In your module, use `forMetrics()` method to define the metrics needed.
+Inject `PromService` service to get a metric.
 
 ```typescript
-import { Module } from '@nestjs/common';
-import { PromModule, MetricType } from '@digikare/nestjs-prom';
-
-@Module({
-  imports: [
-    PromModule.forMetrics([
-      {
-        type: MetricType.Counter,
-        configuration: {
-          name: 'my_counter',
-          help: 'my_counter a simple counter',
-        }
-      },
-      {
-        type: MetricType.Gauge,
-        configuration: {
-          name: 'my_gauge',
-          help: 'my_gauge a simple gauge',
-        }
-      },
-      {
-        type: MetricType.Histogram,
-        configuration: {
-          name: 'my_histogram',
-          help: 'my_histogram a simple histogram',
-        }
-      },
-      {
-        type: MetricType.Summary,
-        configuration: {
-          name: 'my_summary',
-          help: 'my_summary a simple summary',
-        }
-      }
-    ]),
-  ]
-})
-export class MyModule
-```
-
-And you can use `@InjectCounterMetric()` decorator to get the metrics
-
-```typescript
-import { Injectable } from '@nestjs/common';
-import {
-  InjectCounterMetric,
-  InjectGaugeMetric,
-  InjectHistogramMetric,
-  InjectSummaryMetric,
-  CounterMetric,
-  GaugeMetric,
-  HistogramMetric,
-  SummaryMetric,
-} from '@digikare/nestjs-prom';
-
 @Injectable()
 export class MyService {
-  constructor(
-    @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric<string>,
-    @InjectGaugeMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric<string>,
-    @InjectHistogramMetric('my_histogram') private readonly _histogramMetric: HistogramMetric<string>,
-    @InjectSummaryMetric('my_summary') private readonly _summaryMetric: SummaryMetric<string>,
-  ) {}
 
-  doStuff() {
-    this._counterMetric.inc();
+  private readonly _counter: CounterMetric;
+  private readonly _gauge: GaugeMetric,
+  private readonly _histogram: HistogramMetric,
+  private readonly _summary: SummaryMetric,
+
+  constructor(
+    private readonly promService: PromService,
+  ) {
+    this._counter = this.promService.getCounter({ name: 'my_counter' });
   }
 
-  resetCounter() {
-    this._counterMetric.reset();
+  doSomething() {
+    this._counter.inc(1);
+  }
+
+  reset() {
+    this._counter.reset();
   }
 }
 ```
@@ -112,7 +62,7 @@ export class MyService {
 ### Metric class instances
 
 ```typescript
-@PromInstanceCounter
+@PromInstanceCounter()
 export class MyClass {
 
 }

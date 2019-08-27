@@ -1,18 +1,20 @@
 import { Get, Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CounterMetric, InjectCounterMetric, PromMethodCounter, PromInstanceCounter } from '../../lib';
+import { CounterMetric, PromMethodCounter, PromInstanceCounter } from '../../lib';
 import { PromService } from '../../lib/prom.service';
 
-@PromInstanceCounter
+@PromInstanceCounter()
 class MyObj {
 }
 
-@PromInstanceCounter
+@PromInstanceCounter()
 @Controller()
 export class AppController {
+
+  private readonly _counterMetric: CounterMetric<string>
+
   constructor(
     private readonly appService: AppService,
-    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric<string>,
     private readonly promService: PromService,
   ) {}
 
@@ -20,7 +22,7 @@ export class AppController {
   @PromMethodCounter()
   root(): string {
 
-    const counterMetric = this.promService.getCounterMetric('test_on_the_fly');
+    const counterMetric = this.promService.getCounter({name: 'test_on_the_fly'});
     counterMetric.inc(1);
 
     return this.appService.root();
