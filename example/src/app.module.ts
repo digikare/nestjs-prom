@@ -1,7 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PromModule, MetricType, PromController } from '../../lib';
+import { PromModule } from '../../lib';
 import { InboundMiddleware } from '../../lib/middleware/inbound.middleware';
 
 @Module({
