@@ -32,7 +32,11 @@ export class ApplicationModule {}
 
 ### Setup metric
 
-Inject `PromService` service to get a metric.
+To setup a metric, the module provide multiple ways to get a metric.
+
+#### Using PromService and Dependency Injection
+
+By using `PromService` service with DI to get a metric.
 
 ```typescript
 @Injectable()
@@ -55,6 +59,42 @@ export class MyService {
 
   reset() {
     this._counter.reset();
+  }
+}
+```
+
+#### Using Param Decorator
+
+You have the following decorators:
+
+- ```@PromCounter()```
+- ```@PromGauge()```
+- ```@PromHistogram()```
+- ```@PromSummary()```
+
+
+```typescript
+
+import { CounterMetric, PromCounter } from '@digikare/nest-prom';
+
+@Controller()
+export class AppController {
+
+  @Get('/home')
+  home(
+    @PromCounter('app_counter_1_inc') counter1: CounterMetric,
+    @PromCounter({ name: 'app_counter_2_inc', help: 'app_counter_2_help' }) counter2: CounterMetric,
+  ) {
+    counter1.inc(1);
+    counter2.inc(2);
+  }
+
+  @Get('/home2')
+  home2(
+    @PromCounter({ name: 'app_counter_2_inc', help: 'app_counter_2_help' }) counter: CounterMetric,
+  ) {
+    // counter and counter2 on home method is the instance
+    counter.inc(2);
   }
 }
 ```
