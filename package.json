@@ -1,6 +1,6 @@
 {
   "name": "@digikare/nestjs-prom",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A promotheus module for nestjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,6 +46,7 @@
   "homepage": "https://github.com/digikare/nestjs-prom#readme",
   "contributors": [
     "Michael Yankelev @FSM1",
-    "Ashleigh Simonelli @bashleigh"
+    "Ashleigh Simonelli @bashleigh",
+    "@blackkopcap"
   ]
 }
