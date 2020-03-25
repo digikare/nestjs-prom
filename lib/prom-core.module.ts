@@ -3,7 +3,6 @@ import {
   DynamicModule,
   Module,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { PromModuleOptions } from './interfaces';
 import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
 
@@ -14,9 +13,6 @@ import { getRegistryName } from './common/prom.utils';
 @Global()
 @Module({})
 export class PromCoreModule {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-  ) {}
 
   static forRoot(
     options: PromModuleOptions = {},
