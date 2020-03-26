@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { findOrCreateCounter, findOrCreateGauge, findOrCreateHistogram, findOrCreateSummary } from './common/prom.utils';
+import {
+  findOrCreateCounter,
+  findOrCreateGauge,
+  findOrCreateHistogram,
+  findOrCreateSummary,
+  getDefaultRegistry,
+} from './common/prom.utils';
 import { IMetricArguments } from './interfaces';
 
 @Injectable()
@@ -36,5 +42,12 @@ export class PromService {
   getSummaryMetric(name: string) {
     return this.getSummary({ name: name });
   }
-  
+
+  /**
+   * Return the default registry
+   */
+  getDefaultRegistry() {
+    return getDefaultRegistry();
+  }
+
 }

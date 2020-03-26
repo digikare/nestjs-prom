@@ -14,6 +14,10 @@ export function getOptionsName(name: string) {
   return `${name}PromOptions`;
 }
 
+export function getDefaultRegistry() {
+  return client.register;
+}
+
 export const findOrCreateMetric = ({
   name,
   type,
