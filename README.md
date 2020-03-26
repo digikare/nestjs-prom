@@ -1,8 +1,12 @@
-
-
-## Description
+# nestjs-prom v1.x
 
 A prometheus module for Nest.
+
+__BREAKING CHANGE__
+
+> nestjs-prom v0.2.x has been moved to [stable/0.2](https://github.com/digikare/nestjs-prom/tree/stable/0.2) branch.
+>
+> To migrate from v0.2 to v1.x please see [Migrate from 0.2.x to 1.x](./doc/migrate_0.2_1.x.md)
 
 ## Installation
 
@@ -74,7 +78,6 @@ You have the following decorators:
 
 
 ```typescript
-
 import { CounterMetric, PromCounter } from '@digikare/nest-prom';
 
 @Controller()
@@ -93,7 +96,6 @@ export class AppController {
   home2(
     @PromCounter({ name: 'app_counter_2_inc', help: 'app_counter_2_help' }) counter: CounterMetric,
   ) {
-    // counter and counter2 on home method is the instance
     counter.inc(2);
   }
 }
@@ -112,6 +114,8 @@ Will generate a counter called: `app_MyClass_instances_total`
 
 ### Metric method calls
 
+If you want to increment a counter on each call of a specific method:
+
 ```typescript
 @Injectable()
 export class MyService {
@@ -122,7 +126,28 @@ export class MyService {
 }
 ```
 
-Will generate a counter called: `app_MyService_doMyStuff_calls_total`
+Will generate a counter called: `app_MyService_doMyStuff_calls_total` and auto increment on each call
+
+You can use that to monitor an endpoint
+
+```typescript
+@Controller()
+export class AppController {
+  @Get()
+  @PromMethodCounter()
+  root() {
+    // do your stuff
+  }
+
+  @Get('/login')
+  @PromMethodCounter({ name: 'app_login_endpoint_counter' })  // set a custon name
+  login() {
+    // do your stuff
+  }
+}
+```
+
+Will generate a counter called: `app_AppController_root_calls_total`
 
 ### Metric endpoint
 
