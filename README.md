@@ -181,6 +181,15 @@ the moment.
 - `withDefaultController: boolean (default true)` add internal controller to expose /metrics endpoints
 - `useHttpCounterMiddleware: boolean (default false)` register http_requests_total counter
 
+### Decorators
+
+- `@PromInstanceCounter()` Class decorator, create and increment on each instance created
+- `@PromMethodCounter()` Method decorator, create and increment each time the method is called
+- `@PromCounter()` Param decorator, create/find counter metric
+- `@PromGauge()` Param decorator, create/find gauge metric
+- `@PromHistogram()` Param decorator, create/find histogram metric
+- `@PromSummary()` Param decorator, create/find summary metric
+
 ## Auth/security
 
 I do not provide any auth/security for `/metrics` endpoints.
