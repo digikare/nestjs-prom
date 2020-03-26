@@ -71,11 +71,12 @@ export class MyService {
 
 You have the following decorators:
 
-- ```@PromCounter()```
-- ```@PromGauge()```
-- ```@PromHistogram()```
-- ```@PromSummary()```
+- `@PromCounter()`
+- `@PromGauge()`
+- `@PromHistogram()`
+- `@PromSummary()`
 
+Below how to use it
 
 ```typescript
 import { CounterMetric, PromCounter } from '@digikare/nest-prom';
