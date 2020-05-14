@@ -78,7 +78,7 @@ export class PromModule {
   }
 
   static forCounter(
-    configuration: client.CounterConfiguration,
+    configuration: client.CounterConfiguration<string>,
   ): DynamicModule {
     const provider = createPromCounterProvider(configuration);
     return {
@@ -89,7 +89,7 @@ export class PromModule {
   }
 
   static forGauge(
-    configuration: client.GaugeConfiguration,
+    configuration: client.GaugeConfiguration<string>,
   ): DynamicModule {
     const provider = createPromGaugeProvider(configuration);
     return {
@@ -100,7 +100,7 @@ export class PromModule {
   }
 
   static forHistogram(
-    configuration: client.HistogramConfiguration
+    configuration: client.HistogramConfiguration<string>
   ): DynamicModule {
     const provider = createPromHistogramProvider(configuration);
     return {
@@ -111,7 +111,7 @@ export class PromModule {
   }
 
   static forSummary(
-    configuration: client.SummaryConfiguration
+    configuration: client.SummaryConfiguration<string>
   ): DynamicModule {
     const provider = createPromSummaryProvider(configuration);
     return {

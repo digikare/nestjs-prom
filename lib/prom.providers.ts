@@ -14,7 +14,7 @@ import { Provider } from "@nestjs/common";
 import { getMetricToken, getRegistryName } from "./common/prom.utils";
 
 export function createPromCounterProvider(
-  configuration: CounterConfiguration,
+  configuration: CounterConfiguration<string>,
   registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
@@ -34,7 +34,7 @@ export function createPromCounterProvider(
 }
 
 export function createPromGaugeProvider(
-  configuration: GaugeConfiguration,
+  configuration: GaugeConfiguration<string>,
   registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
@@ -54,7 +54,7 @@ export function createPromGaugeProvider(
 }
 
 export function createPromHistogramProvider(
-  configuration: HistogramConfiguration,
+  configuration: HistogramConfiguration<string>,
   registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {
@@ -74,7 +74,7 @@ export function createPromHistogramProvider(
 }
 
 export function createPromSummaryProvider(
-  configuration: SummaryConfiguration,
+  configuration: SummaryConfiguration<string>,
   registryName: string = DEFAULT_PROM_REGISTRY,
 ): Provider {
   return {

@@ -9,7 +9,7 @@ import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from 
 
 import * as client from 'prom-client';
 import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
-import { getRegistryName, getOptionsName } from './common/prom.utils';
+import { getRegistryName } from './common/prom.utils';
 
 @Global()
 @Module({})
@@ -25,9 +25,7 @@ export class PromCoreModule {
     const {
       withDefaultsMetrics,
       registryName,
-      timeout,
       prefix,
-      ...promOptions
     } = options;
 
     const promRegistryName = registryName ?
@@ -61,9 +59,6 @@ export class PromCoreModule {
           const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
             register: registry,
           };
-          if (timeout) {
-            defaultMetricsOptions.timeout = timeout;
-          }
           if (prefix) {
             defaultMetricsOptions.prefix = prefix;
           }

@@ -13,22 +13,22 @@ export interface MetricTypeConfigurationInterface {
   configuration?: any;
 }
 
-export class MetricTypeCounter implements MetricTypeConfigurationInterface {
+export class MetricTypeCounter<T extends string> implements MetricTypeConfigurationInterface {
   type: MetricType = MetricType.Counter;
-  configuration: PromClient.CounterConfiguration;
+  configuration: PromClient.CounterConfiguration<T>;
 }
 
-export class MetricTypeGauge implements MetricTypeConfigurationInterface {
+export class MetricTypeGauge<T extends string> implements MetricTypeConfigurationInterface {
   type: MetricType = MetricType.Gauge;
-  configuration: PromClient.GaugeConfiguration;
+  configuration: PromClient.GaugeConfiguration<T>;
 }
 
-export class MetricTypeHistogram implements MetricTypeConfigurationInterface {
+export class MetricTypeHistogram<T extends string> implements MetricTypeConfigurationInterface {
   type: MetricType = MetricType.Histogram;
-  configuration: PromClient.HistogramConfiguration;
+  configuration: PromClient.HistogramConfiguration<T>;
 }
 
-export class MetricTypeSummary implements MetricTypeConfigurationInterface {
+export class MetricTypeSummary<T extends string> implements MetricTypeConfigurationInterface {
   type: MetricType = MetricType.Summary;
-  configuration: PromClient.SummaryConfiguration;
+  configuration: PromClient.SummaryConfiguration<T>;
 }
