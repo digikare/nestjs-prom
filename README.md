@@ -1,4 +1,6 @@
 
+# TEMPORARY FORK TO UPDATE prom-client to 12.0.0 
+# Will be removed once change is accepted upstream
 
 ## Description
 

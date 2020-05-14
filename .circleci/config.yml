@@ -1,0 +1,51 @@
+version: 2.1
+orbs:
+  sixrs-gke: sixriversystems/sixrs-gke@2
+jobs:
+  install:
+    docker:
+      - image: circleci/node:10.16.2-stretch
+        environment:
+          - NODE_ENV: test
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-v4-{{ checksum "package-lock.json"}}
+            - dependency-cache-v4-
+      - save_cache:
+          key: dependency-cache-v4-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - .
+  publish:
+    docker:
+      - image: circleci/node:10.16.2-stretch
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: npm install deps
+          command: npm install
+      - run:
+          name: npm run build
+          command: npm run build
+     - run:
+          name: Setup NPM Auth
+          command: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
+      - sixrs-gke/run-release
+      - sixrs-gke/npm-publish
+
+workflows:
+  version: 2
+  test_and_publish:
+    jobs:
+      - install:
+          context: 6rs-public-npm
+      - publish:
+          context: 6rs-public-npm
+          requires:
+            - install
