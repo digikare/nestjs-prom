@@ -5,8 +5,6 @@ jobs:
   install:
     docker:
       - image: circleci/node:10.16.2-stretch
-        environment:
-          - NODE_ENV: test
     steps:
       - checkout
       - restore_cache:
@@ -33,7 +31,7 @@ jobs:
       - run:
           name: npm run build
           command: npm run build
-     - run:
+      - run:
           name: Setup NPM Auth
           command: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
       - sixrs-gke/run-release
