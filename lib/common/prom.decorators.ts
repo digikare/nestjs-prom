@@ -9,18 +9,46 @@ export const InjectSummaryMetric = (name: string) => Inject(getMetricToken(`Summ
 /**
  * Create and increment a counter when the method is called
  */
-export const PromMethodCounter = () => {
-    return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => {
+export const PromMethodCounter = <T extends any> () => {
+    return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<(...args: any[]) => T>) => {
         const className = target.constructor.name;
         const counterMetric = findOrCreateCounter({
             name: `app_${className}_${propertyKey.toString()}_calls_total`,
             help: `app_${className}#${propertyKey.toString()} called total`,
         });
         const methodFunc = descriptor.value;
-        descriptor.value = function (...args) {
+
+        if (!methodFunc) {
+            throw new Error('Decorator was invoked not under the method');
+        }
+
+        descriptor.value = function (...args: any[]): T {
             counterMetric.inc(1);
             return methodFunc.apply(this, args);
+        };
+    };
+}
+
+/**
+ * Create and increment a counter when the async method is called
+ */
+export const PromAsyncMethodCounter = <T extends any> () => {
+    return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<(...args: any[]) => Promise<T>>) => {
+        const className = target.constructor.name;
+        const counterMetric = findOrCreateCounter({
+            name: `app_${className}_${propertyKey.toString()}_calls_total`,
+            help: `app_${className}#${propertyKey.toString()} called total`,
+        });
+        const methodFunc = descriptor.value;
+
+        if (!methodFunc) {
+            throw new Error('Decorator was invoked not under the method');
         }
+
+        descriptor.value = async function (...args: any[]): Promise<T> {
+            counterMetric.inc(1);
+            return methodFunc.apply(this, args);
+        };
     };
 }
 
