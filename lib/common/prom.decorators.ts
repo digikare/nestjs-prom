@@ -17,7 +17,6 @@ export const PromMethodCounter = () => {
             help: `app_${className}#${propertyKey.toString()} called total`,
         });
         const methodFunc = descriptor.value;
-
         descriptor.value = function (...args: any[]) {
             counterMetric.inc(1);
             return methodFunc.apply(this, args);
