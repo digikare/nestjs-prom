@@ -18,10 +18,6 @@ export const PromMethodCounter = () => {
         });
         const methodFunc = descriptor.value;
 
-        if (!methodFunc) {
-            throw new Error('Decorator was invoked not for the method');
-        }
-
         descriptor.value = function (...args: any[]) {
             counterMetric.inc(1);
             return methodFunc.apply(this, args);
