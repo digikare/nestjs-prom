@@ -16,18 +16,18 @@
   "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
   "license": "MIT",
   "devDependencies": {
-    "@nestjs/common": "^6.5.3",
-    "@nestjs/core": "^6.5.3",
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
     "@types/node": "^10.14.16",
     "prom-client": "^12.0.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.2",
     "ts-node": "^8.3.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@nestjs/common": "^6.5.3",
-    "@nestjs/core": "^6.5.3",
+    "@nestjs/common": ">= 6.5.3 < 8",
+    "@nestjs/core": ">= 6.5.3 < 8",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.2"
   },
