@@ -6,7 +6,7 @@ import { InjectCounterMetric } from "../common";
 export class InboundMiddleware implements NestMiddleware {
 
   constructor(
-    @InjectCounterMetric('http_requests_total') private readonly _counter: Counter,
+    @InjectCounterMetric('http_requests_total') private readonly _counter: Counter<string>,
   ) {}
 
   use (req, res, next) {
@@ -33,7 +33,7 @@ export class InboundMiddleware implements NestMiddleware {
       path: url,
     };
 
-    this._counter.inc(labelValues, 1, new Date());
+    this._counter.inc(labelValues, 1);
 
     next();
   }
