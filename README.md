@@ -36,7 +36,7 @@ In your module, use `forMetrics()` method to define the metrics needed.
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { PromModule, MetricType } from '@digikare/nest-prom';
+import { PromModule, MetricType } from '@digikare/nestjs-prom';
 
 @Module({
   imports: [
@@ -88,7 +88,7 @@ import {
   GaugeMetric,
   HistogramMetric,
   SummaryMetric,
-} from '@digikare/nest-prom';
+} from '@digikare/nestjs-prom';
 
 @Injectable()
 export class MyService {
@@ -125,7 +125,7 @@ Will generate a counter called: `app_MyClass_instances_total`
 ```typescript
 @Injectable()
 export class MyService {
-  @PromMethodCounter
+  @PromMethodCounter()
   doMyStuff() {
 
   }
