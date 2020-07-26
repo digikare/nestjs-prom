@@ -5,11 +5,11 @@ import { CounterMetric, InjectCounterMetric } from '../../lib';
 export class AppService {
 
   constructor(
-    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric,
+    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric<string>,
   ) {}
 
   root(): string {
-    this._counterMetric.inc(1, new Date());
+    this._counterMetric.inc(1);
     return 'Hello World!';
   }
 }
