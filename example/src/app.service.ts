@@ -9,7 +9,7 @@ export class AppService {
   ) {}
 
   root(): string {
-    this._promService.getCounter({name: 'test'}).inc(1, new Date());
+    this._promService.getCounter({name: 'test'}).inc(1);
     return 'Hello World!';
   }
 }
