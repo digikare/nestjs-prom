@@ -93,10 +93,10 @@ import {
 @Injectable()
 export class MyService {
   constructor(
-    @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric,
-    @InjectGaugeMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric,
-    @InjectHistogramMetric('my_histogram') private readonly _histogramMetric: HistogramMetric,
-    @InjectSummaryMetric('my_summary') private readonly _summaryMetric: SummaryMetric,
+    @InjectCounterMetric('my_counter') private readonly _counterMetric: CounterMetric<string>,
+    @InjectGaugeMetric('my_gauge') private readonly _gaugeMetric: GaugeMetric<string>,
+    @InjectHistogramMetric('my_histogram') private readonly _histogramMetric: HistogramMetric<string>,
+    @InjectSummaryMetric('my_summary') private readonly _summaryMetric: SummaryMetric<string>,
   ) {}
 
   doStuff() {

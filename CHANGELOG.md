@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 0.2.3 - 2020-07-26
 
+BREAKING CHANGE: With prom-client v12, the Metric classes is now a generic class, check the prom-client documentation for more info
+
 ### Fixes
 - update prom-client to v12 - (thanks @AeroNotix)
 - fix counter generic type - (thanks @ZamNick)
