@@ -19,8 +19,9 @@ export interface PromModuleOptions {
    */
   useHttpCounterMiddleware?: boolean;
 
+  withGlobalInterceptor?: boolean;
+
   registryName?: string;
-  timeout?: number;
   prefix?: string;
   defaultLabels?: {
     [key: string]: any,

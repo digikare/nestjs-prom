@@ -2,6 +2,8 @@
 import * as client from 'prom-client';
 import { IMetricArguments } from '../interfaces';
 
+type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
+
 export function getMetricToken(type: string, name: string) {
   return `${name}${type}`;
 }
@@ -26,7 +28,7 @@ export const findOrCreateMetric = ({
   registry,
 }: {
   name: string;
-  type: string;
+  type: MetricType;
   help?: string;
   labelNames?: string[];
   registry?: client.Registry;
@@ -36,11 +38,35 @@ export const findOrCreateMetric = ({
 
   let metric: client.Metric<string> = register.getSingleMetric(name);
   if (!metric) {
-    return new client.Counter({
-      name: name,
-      help: help || `${name} ${type}`,
-      labelNames,
-    });
+
+    switch (type) {
+      case "Gauge":
+        return new client.Gauge({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Histogram":
+        return new client.Histogram({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Summary":
+        return new client.Summary({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Counter":
+      default:
+        return new client.Counter({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+    }
+
   }
 
   if (metric instanceof client.Counter === false) {
@@ -64,13 +90,15 @@ export const findOrCreateCounter = ({
     help,
     type: `Counter`,
     labelNames,
+    registry,
   }) as client.Counter<string>;
-};
+}
 
 export const findOrCreateGauge = ({
   name,
   help,
   labelNames,
+  registry,
 }: IMetricArguments): client.Gauge<string> => {
   return findOrCreateMetric({
     name,
@@ -79,7 +107,7 @@ export const findOrCreateGauge = ({
     labelNames,
     registry,
   }) as client.Gauge<string>;
-};
+}
 
 export const findOrCreateHistogram = ({
   name,
@@ -94,13 +122,13 @@ export const findOrCreateHistogram = ({
     labelNames,
     registry,
   }) as client.Histogram<string>;
-};
+}
 
 export const findOrCreateSummary = ({
   name,
   help,
   labelNames,
-registry,
+  registry,
 }: IMetricArguments): client.Summary<string> => {
   return findOrCreateMetric({
     name,
@@ -109,4 +137,4 @@ registry,
     labelNames,
     registry,
   }) as client.Summary<string>;
-};
+}

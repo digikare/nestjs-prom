@@ -13,7 +13,7 @@ export class InboundMiddleware implements NestMiddleware {
     this._counter = this._service.getCounter({
       name: 'http_requests_total',
       help: 'http_requests_total Number of inbound request',
-      labelNames: ['method', 'status', 'path']
+      labelNames: ['method', 'path']
     });
   }
 
@@ -37,7 +37,6 @@ export class InboundMiddleware implements NestMiddleware {
 
     const labelValues = {
       method,
-      status: res.statusCode,
       path: url,
     };
 
