@@ -50,9 +50,13 @@ export class PromCoreModule {
         if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
           registry = new Registry();
         }
-
+        
         // clear here for HMR support
         registry.clear();
+
+        if (options.defaultLabels) {
+          registry.setDefaultLabels(options.defaultLabels)
+        }
 
         if (withDefaultsMetrics !== false) {
           const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
