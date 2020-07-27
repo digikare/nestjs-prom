@@ -47,6 +47,9 @@ export class PromCoreModule {
           registry = new Registry();
         }
 
+        // clear here for HMR support
+        registry.clear();
+        
         if (options.defaultLabels) {
           registry.setDefaultLabels(options.defaultLabels)
         }
