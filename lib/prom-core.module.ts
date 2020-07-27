@@ -47,6 +47,10 @@ export class PromCoreModule {
           registry = new Registry();
         }
 
+        if (options.defaultLabels) {
+          registry.setDefaultLabels(options.defaultLabels)
+        }
+
         if (withDefaultsMetrics !== false) {
           const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
             register: registry,
