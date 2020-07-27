@@ -37,10 +37,6 @@ export class PromCoreModule {
       useValue: promRegistryName,
     }
 
-    // const promOptionName = registryName ?
-    //   getOptionsName(registryName)
-    //   : DEFAULT_PROM_OPTIONS;
-
     const promRegistryOptionsProvider = {
       provide: DEFAULT_PROM_OPTIONS,
       useValue: options,
@@ -54,6 +50,9 @@ export class PromCoreModule {
         if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
           registry = new Registry();
         }
+
+        // clear here for HMR support
+        registry.clear();
 
         if (withDefaultsMetrics !== false) {
           const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
