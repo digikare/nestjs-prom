@@ -12,7 +12,7 @@ class MyObj {
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric<string>,
+    @InjectCounterMetric('index_counter') private readonly _counterMetric: CounterMetric,
     private readonly promService: PromService,
   ) {}
 
