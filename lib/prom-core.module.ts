@@ -3,7 +3,6 @@ import {
   DynamicModule,
   Module,
 } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
 import { PromModuleOptions } from './interfaces';
 import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
 
@@ -14,9 +13,6 @@ import { getRegistryName } from './common/prom.utils';
 @Global()
 @Module({})
 export class PromCoreModule {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-  ) {}
 
   static forRoot(
     options: PromModuleOptions = {},
@@ -37,10 +33,6 @@ export class PromCoreModule {
       useValue: promRegistryName,
     }
 
-    // const promOptionName = registryName ?
-    //   getOptionsName(registryName)
-    //   : DEFAULT_PROM_OPTIONS;
-
     const promRegistryOptionsProvider = {
       provide: DEFAULT_PROM_OPTIONS,
       useValue: options,
@@ -53,6 +45,13 @@ export class PromCoreModule {
         let registry = client.register;
         if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
           registry = new Registry();
+        }
+
+        // clear here for HMR support
+        registry.clear();
+        
+        if (options.defaultLabels) {
+          registry.setDefaultLabels(options.defaultLabels)
         }
 
         if (withDefaultsMetrics !== false) {
@@ -81,11 +80,5 @@ export class PromCoreModule {
         registryProvider,
       ],
     };
-  }
-
-  /**
-   * on destroy
-   */
-  onModuleDestroy() {
   }
 }

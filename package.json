@@ -1,37 +1,48 @@
 {
   "name": "@digikare/nestjs-prom",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "A promotheus module for nestjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "precommit": "lint-staged",
     "prepublish:npm": "npm run build",
     "publish:npm": "npm publish --access public",
     "prepublish:next": "npm run build",
-    "publish:next": "npm publish --access public --tag next"
+    "publish:next": "npm publish --access public --tag next",
+    "test:e2e": "jest --config ./tests/jest-e2e.json --runInBand",
+    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --runInBand --watch",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/ts-node tests/src/main.ts",
+    "test:live": "ts-node tests/src/main.ts"
   },
   "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
   "license": "MIT",
   "devDependencies": {
-    "@nestjs/common": "^6.5.3",
-    "@nestjs/core": "^6.5.3",
-    "@types/node": "^10.14.16",
-    "prom-client": "^12.0.0",
+    "@nestjs/common": "^7.0.0",
+    "@nestjs/core": "^7.0.0",
+    "@nestjs/platform-express": "^7.3.2",
+    "@types/jest": "^26.0.7",
+    "@types/node": "^12.12.53",
+    "@types/supertest": "^2.0.10",
+    "jest": "^26.1.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.5.2",
+    "rxjs": "^6.6.0",
+    "supertest": "^4.0.2",
+    "ts-jest": "^26.1.4",
     "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.9.7"
   },
   "peerDependencies": {
-    "@nestjs/common": "^6.5.3",
-    "@nestjs/core": "^6.5.3",
-    "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.5.2"
+    "@nestjs/common": "^6.0.0 || ^7.0.0",
+    "@nestjs/core": "^6.0.0 || ^7.0.0",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@nestjs/testing": "^7.3.2",
+    "prom-client": "^12.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/digikare/nestjs-prom.git"

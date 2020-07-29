@@ -19,11 +19,20 @@ export interface PromModuleOptions {
    */
   useHttpCounterMiddleware?: boolean;
 
+  /**
+   * Eanble or not the global interceptor
+   * Usefull to catch exception thrown by your app
+   */
+  withGlobalInterceptor?: boolean;
+
   registryName?: string;
-  timeout?: number;
   prefix?: string;
+
+  /**
+   * Set the defaults labels
+   */
   defaultLabels?: {
-    [key: string]: any,
+    [key: string]: string|number,
   };
 
   customUrl?: string;

@@ -32,3 +32,10 @@ export class MetricTypeSummary<T extends string> implements MetricTypeConfigurat
   type: MetricType = MetricType.Summary;
   configuration: PromClient.SummaryConfiguration<T>;
 }
+
+export interface IMetricArguments {
+  name: string;
+  help?: string;
+  labelNames?: string[];
+  registry?: PromClient.Registry;
+}
