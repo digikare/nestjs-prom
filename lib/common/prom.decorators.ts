@@ -1,5 +1,6 @@
 import { Inject } from '@nestjs/common';
 import { getMetricToken, findOrCreateCounter } from './prom.utils';
+import { CounterMetric } from '../interfaces';
 
 export const InjectCounterMetric = (name: string) => Inject(getMetricToken(`Counter`, name));
 export const InjectGaugeMetric = (name: string) => Inject(getMetricToken(`Gauge`, name));
@@ -12,12 +13,15 @@ export const InjectSummaryMetric = (name: string) => Inject(getMetricToken(`Summ
 export const PromMethodCounter = () => {
     return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<(...args: any[]) => any>) => {
         const className = target.constructor.name;
-        const counterMetric = findOrCreateCounter({
-            name: `app_${className}_${propertyKey.toString()}_calls_total`,
-            help: `app_${className}#${propertyKey.toString()} called total`,
-        });
+        const name = `app_${className}_${propertyKey.toString()}_calls_total`;
+        const help = `app_${className}#${propertyKey.toString()} called total`;
         const methodFunc = descriptor.value;
+        let counterMetric: CounterMetric = undefined;
+        
         descriptor.value = function (...args: any[]) {
+            if (!counterMetric) {
+                counterMetric = findOrCreateCounter({ name, help });
+            }
             counterMetric.inc(1);
             return methodFunc.apply(this, args);
         };
@@ -30,12 +34,15 @@ export const PromMethodCounter = () => {
  * @param ctor
  */
 export const PromInstanceCounter = <T extends { new(...args: any[]): {} }>(ctor: T) => {
-    const counterMetric = findOrCreateCounter({
-        name: `app_${ctor.name}_instances_total`,
-        help: `app_${ctor.name} object instances total`,
-    });
+    const name = `app_${ctor.name}_instances_total`;
+    const help = `app_${ctor.name} object instances total`;
+    let counterMetric: CounterMetric = undefined;
+
     return class extends ctor {
         constructor(...args) {
+            if (!counterMetric) {
+                counterMetric = findOrCreateCounter({ name, help });
+            }
             counterMetric.inc(1);
             super(...args);
         }
