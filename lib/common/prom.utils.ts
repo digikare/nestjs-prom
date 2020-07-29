@@ -1,5 +1,8 @@
 
 import * as client from 'prom-client';
+import { GenericMetric, CounterMetric, GaugeMetric, HistogramMetric, SummaryMetric } from '../interfaces';
+
+export type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
 
 export function getMetricToken(type: string, name: string) {
   return `${name}${type}`;
@@ -20,24 +23,42 @@ export const findOrCreateMetric = ({
   labelNames,
 }: {
   name: string;
-  type: string;
+  type: MetricType;
   help?: string;
   labelNames?: string[];
-}): client.Metric<string> => {
-  let metric: client.Metric<string> = client.register.getSingleMetric(name);
-  if (!metric) {
-    return new client.Counter({
-      name: name,
-      help: help || `${name} ${type}`,
-      labelNames,
-    });
-  }
+}): GenericMetric => {
+  let metric: GenericMetric = client.register.getSingleMetric(name);
 
-  if (metric instanceof client.Counter === false) {
-    return new client.Counter({
-      name: getMetricToken(type, name),
-      help: help || `${name} ${type}`,
-    });
+  if (!metric) {
+
+    switch (type) {
+      case "Counter":
+        return new client.Counter({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Gauge":
+        return new client.Gauge({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Histogram":
+        return new client.Histogram({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      case "Summary":
+        return new client.Histogram({
+          name: name,
+          help: help || `${name} ${type}`,
+          labelNames,
+        });
+      default:
+        throw new Error(`Type ${type} not supported`);
+    }
   }
 
   return metric;  
@@ -51,13 +72,13 @@ export const findOrCreateCounter = ({
   name: string;
   help?: string;
   labelNames?: string[];
-}): client.Counter<string> => {
+}): CounterMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Counter`,
     labelNames,
-  }) as client.Counter<string>;
+  }) as CounterMetric;
 };
 
 export const findOrCreateGauge = ({
@@ -68,13 +89,13 @@ export const findOrCreateGauge = ({
   name: string;
   help?: string;
   labelNames?: string[];
-}): client.Gauge<string> => {
+}): GaugeMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Gauge`,
     labelNames,
-  }) as client.Gauge<string>;
+  }) as GaugeMetric;
 };
 
 export const findOrCreateHistogram = ({
@@ -85,13 +106,13 @@ export const findOrCreateHistogram = ({
   name: string;
   help?: string;
   labelNames?: string[];
-}): client.Histogram<string> => {
+  }): HistogramMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Histogram`,
     labelNames,
-  }) as client.Histogram<string>;
+  }) as HistogramMetric;
 };
 
 export const findOrCreateSummary = ({
@@ -102,11 +123,11 @@ export const findOrCreateSummary = ({
   name: string;
   help?: string;
   labelNames?: string[];
-}): client.Summary<string> => {
+}): SummaryMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Summary`,
     labelNames,
-  }) as client.Summary<string>;
+  }) as SummaryMetric;
 };
