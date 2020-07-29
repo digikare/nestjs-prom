@@ -27,12 +27,26 @@ import { PromModule } from '@digikare/nestjs-prom';
     PromModule.forRoot({
       defaultLabels: {
         app: 'my_app',
+        version: 'x.y.z',
       }
     }),
   ]
 })
 export class ApplicationModule {}
 ```
+
+### PromModule.forRoot options
+
+Here the options available for PromModule.forRoot:
+
+|key|type|default|details|
+|---|---|---|---|
+|defaultLabels|object|`{}`|The defaults labels to apply on every counter|
+|useHttpCounterMiddleware|boolean|`true`|Create automatically http_requests_total counter|
+|withDefaultController|boolean|`true`|Enable default controller to handle `/metrics` endpoint|
+|withDefaultsMetrics|boolean|`true`|Enable defaults metrics for nodejs (call `collectDefaultMetrics()`)|
+|withGlobalInterceptor|boolean|`true`|Enable interceptor to catch uncatched exception thrown by your app on an endpoint|
+
 
 ### Setup metric
 
@@ -104,6 +118,8 @@ export class AppController {
 
 ### Metric class instances
 
+If you want to counthow many instance of a specific class has been created:
+
 ```typescript
 @PromInstanceCounter()
 export class MyClass {
@@ -135,20 +151,18 @@ You can use that to monitor an endpoint
 @Controller()
 export class AppController {
   @Get()
-  @PromMethodCounter()
+  @PromMethodCounter() // will generate `app_AppController_root_calls_total` counter
   root() {
     // do your stuff
   }
 
   @Get('/login')
-  @PromMethodCounter({ name: 'app_login_endpoint_counter' })  // set a custon name
+  @PromMethodCounter({ name: 'app_login_endpoint_counter' })  // set the counter name
   login() {
     // do your stuff
   }
 }
 ```
-
-Will generate a counter called: `app_AppController_root_calls_total`
 
 ### Metric endpoint
 
@@ -203,7 +217,6 @@ apply a middleware on `/metrics` to secure it.
   - Histogram
   - Summary
 - Manage registries
-- Tests
 - Adding example on how to secure `/metrics` endpoint
   - secret
   - jwt
