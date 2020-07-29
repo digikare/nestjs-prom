@@ -3,6 +3,17 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { PromService } from "./prom.service";
 import { CounterMetric } from "./interfaces";
 
+function getBaseUrl(url?: string) {
+    if (!url) {
+        return url;
+    }
+
+    if (url.indexOf('?') === -1) {
+        return url;
+    } 
+    return url.split('?')[0];
+}
+
 @Catch()
 export class PromCatchAllExceptionsFilter extends BaseExceptionFilter {
 
@@ -33,7 +44,7 @@ export class PromCatchAllExceptionsFilter extends BaseExceptionFilter {
 
         this._counter.inc({
             method: request.method,
-            path: request.baseUrl ?? request.url,
+            path: getBaseUrl(request.baseUrl || request.url),
             status,
         });
         super.catch(exception, host);
