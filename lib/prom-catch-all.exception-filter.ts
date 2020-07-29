@@ -1,12 +1,12 @@
 import { Catch, ArgumentsHost, HttpException, HttpStatus } from "@nestjs/common";
 import { BaseExceptionFilter } from '@nestjs/core';
 import { PromService } from "./prom.service";
-import { Counter } from "prom-client";
+import { CounterMetric } from "./interfaces";
 
 @Catch()
 export class PromCatchAllExceptionsFilter extends BaseExceptionFilter {
 
-    private _counter: Counter<string>;
+    private _counter: CounterMetric;
 
     constructor(
         promService: PromService,

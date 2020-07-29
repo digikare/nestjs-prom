@@ -42,7 +42,6 @@ describe('PromModule', () => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
                     expect(/^http_requests_total$/.test(text)).toBeFalsy();
-                    // expect(/^http_requests_total{[^}]*path="\/PromMethodCounter_1"[^}]*} 1$/.test(text)).toBeFalsy();
                     done();
                 });
         }); 
@@ -70,7 +69,6 @@ describe('PromModule', () => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
                     expect(/^http_requests_total$/.test(text)).toBeFalsy();
-                    // expect(/^http_requests_total{[^}]*path="\/PromMethodCounter_1"[^}]*} 1$/.test(text)).toBeFalsy();
                     done();
                 });
         });

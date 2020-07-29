@@ -19,7 +19,7 @@ const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min) + min)
 @Controller()
 export class AppController {
 
-  private readonly _counterMetric: CounterMetric<string>;
+  private readonly _counterMetric: CounterMetric;
 
   constructor(
     private readonly appService: AppService,
@@ -34,11 +34,18 @@ export class AppController {
     return 'PromMethodCounter_1';
   }
 
+
+  @Get('/PromMethodCounter_labels')
+  @PromMethodCounter()
+  PromMethodCounter_labels() {
+    return 'PromMethodCounter_labels';
+  }
+
   @Get()
   @PromMethodCounter()
   root(
-    @PromCounter({ name: 'app_testing_counter_object_total' }) counterObject: CounterMetric<string>,
-    @PromCounter('app_testing_counter_string_total') counterString: CounterMetric<string>,
+    @PromCounter({ name: 'app_testing_counter_object_total' }) counterObject: CounterMetric,
+    @PromCounter('app_testing_counter_string_total') counterString: CounterMetric,
   ): string {
 
     const counterMetric = this.promService.getCounter({name: 'test_on_the_fly'});

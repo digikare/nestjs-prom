@@ -1,9 +1,17 @@
 import * as client from 'prom-client';
-import { IMetricArguments } from '../interfaces';
+import { 
+  IMetricArguments, 
+  GenericMetric, 
+  CounterMetric, 
+  GaugeMetric, 
+  HistogramMetric, 
+  SummaryMetric, 
+  Registry,
+} from '../interfaces';
 
 type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
 
-const registries = new Map<string, client.Registry>();
+const registries = new Map<string, Registry>();
 
 export function getMetricToken(type: string, name: string) {
   return `${name}${type}`;
@@ -45,12 +53,12 @@ export const findOrCreateMetric = ({
   type: MetricType;
   help?: string;
   labelNames?: string[];
-  registry?: client.Registry;
-}): client.Metric<string> => {
+  registry?: Registry;
+}): GenericMetric => {
 
   const register = registry ?? getDefaultRegistry();
 
-  let metric: client.Metric<string> = register.getSingleMetric(name);
+  let metric: GenericMetric = register.getSingleMetric(name);
   if (!metric) {
 
     switch (type) {
@@ -98,14 +106,14 @@ export const findOrCreateCounter = ({
   help,
   labelNames,
   registry,
-}: IMetricArguments): client.Counter<string> => {
+}: IMetricArguments): CounterMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Counter`,
     labelNames,
     registry,
-  }) as client.Counter<string>;
+  }) as CounterMetric;
 }
 
 export const findOrCreateGauge = ({
@@ -113,14 +121,14 @@ export const findOrCreateGauge = ({
   help,
   labelNames,
   registry,
-}: IMetricArguments): client.Gauge<string> => {
+}: IMetricArguments): GaugeMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Gauge`,
     labelNames,
     registry,
-  }) as client.Gauge<string>;
+  }) as GaugeMetric;
 }
 
 export const findOrCreateHistogram = ({
@@ -128,14 +136,14 @@ export const findOrCreateHistogram = ({
   help,
   labelNames,
   registry,
-}: IMetricArguments): client.Histogram<string> => {
+}: IMetricArguments): HistogramMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Histogram`,
     labelNames,
     registry,
-  }) as client.Histogram<string>;
+  }) as HistogramMetric;
 }
 
 export const findOrCreateSummary = ({
@@ -143,12 +151,12 @@ export const findOrCreateSummary = ({
   help,
   labelNames,
   registry,
-}: IMetricArguments): client.Summary<string> => {
+}: IMetricArguments): SummaryMetric => {
   return findOrCreateMetric({
     name,
     help,
     type: `Summary`,
     labelNames,
     registry,
-  }) as client.Summary<string>;
+  }) as SummaryMetric;
 }
