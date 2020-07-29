@@ -12,7 +12,9 @@
     "prepublish:next": "npm run build",
     "publish:next": "npm publish --access public --tag next",
     "test:e2e": "jest --config ./tests/jest-e2e.json --runInBand",
-    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --runInBand --watch"
+    "test:e2e:dev": "jest --config ./tests/jest-e2e.json --runInBand --watch",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/ts-node tests/src/main.ts",
+    "test:live": "ts-node tests/src/main.ts"
   },
   "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
   "license": "MIT",
