@@ -34,12 +34,34 @@ export class AppController {
     return 'PromMethodCounter_1';
   }
 
-
-  @Get('/PromMethodCounter_labels')
-  @PromMethodCounter()
-  PromMethodCounter_labels() {
-    return 'PromMethodCounter_labels';
+  @Get('/PromCounter_1')
+  PromCounter_1(
+    @PromCounter('app_test_counter_1') counter: CounterMetric,
+  ) {
+    counter.inc();
+    return 'PromCounter_1';
   }
+
+  @Get('/PromCounterService_1')
+  PromCounterService_1() {
+    const counterMetric = this.promService.getCounter({ name: 'app_counter_service_1' });
+    counterMetric.inc(1);
+    return 'PromCounterService_1';
+  }
+
+
+  @Get('PromInstanceCounter_1')
+  PromInstanceCounter_1() {
+    const objInstance = new MyObj(); // increment app_MyObj_instances_total
+    return 'PromInstanceCounter_1';
+  }
+
+  @Get('error_1')
+  error_1() {
+    throw new HttpException('error testing', HttpStatus.FORBIDDEN);
+  }
+
+  // below - testing manually
 
   @Get()
   @PromMethodCounter()
