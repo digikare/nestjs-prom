@@ -4,3 +4,4 @@ export * from './interfaces';
 export * from './prom.controller';
 export * from './prom.module';
 export * from './prom.service';
+export * from './middleware';

@@ -1,7 +1,12 @@
-import { Get, Controller, HttpStatus, HttpException, UseInterceptors } from '@nestjs/common';
+import { Get, Controller, HttpStatus, HttpException } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CounterMetric, PromMethodCounter, PromInstanceCounter, PromCounter } from '../../lib';
-import { PromService } from '../../lib/prom.service';
+import { 
+  CounterMetric, 
+  PromMethodCounter, 
+  PromInstanceCounter, 
+  PromCounter, 
+  PromService,
+} from '../../lib';
 
 @PromInstanceCounter()
 class MyObj {
@@ -21,6 +26,12 @@ export class AppController {
     private readonly promService: PromService,
   ) {
     this._counterMetric = this.promService.getCounterMetric('testing');
+  }
+
+  @Get('/PromMethodCounter_1')
+  @PromMethodCounter()
+  PromMethodCounter_1() {
+    return 'PromMethodCounter_1';
   }
 
   @Get()

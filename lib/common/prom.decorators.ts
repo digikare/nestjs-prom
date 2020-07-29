@@ -1,5 +1,6 @@
 import { findOrCreateCounter } from './prom.utils';
 import { IMetricArguments } from '../interfaces';
+import { Counter } from 'prom-client';
 
 /**
  * Create and increment a counter when the method is called
@@ -7,13 +8,18 @@ import { IMetricArguments } from '../interfaces';
 export const PromMethodCounter = (params?: IMetricArguments) => {
     return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<(...args: any[]) => any>) => {
         const className = target.constructor.name;
-        const counterMetric = findOrCreateCounter({
-            name: `app_${className}_${propertyKey.toString()}_calls_total`,
-            help: `app_${className}#${propertyKey.toString()} called total`,
-            ...params,
-        });
+        const name = `app_${className}_${propertyKey.toString()}_calls_total`;
+        const help = `app_${className}#${propertyKey.toString()} called total`;
+        let counterMetric: Counter<string>;
         const methodFunc = descriptor.value;
         descriptor.value = function (...args: any[]) {
+            if (!counterMetric) {
+                counterMetric = findOrCreateCounter({ 
+                    name,
+                    help,
+                    ...params,
+                });
+            }
             counterMetric.inc(1);
             return methodFunc.apply(this, args);
         };
@@ -27,13 +33,20 @@ export const PromMethodCounter = (params?: IMetricArguments) => {
  */
 export const PromInstanceCounter = (params?: IMetricArguments) => {
     return <T extends { new(...args: any[]): {} }>(ctor: T) => {
-        const counterMetric = findOrCreateCounter({
-            name: `app_${ctor.name}_instances_total`,
-            help: `app_${ctor.name} object instances total`,
-            ...params,
-        });
+        const name = `app_${ctor.name}_instances_total`;
+        const help = `app_${ctor.name} object instances total`;
+        let counterMetric: Counter<string>;
+
         return class extends ctor {
             constructor(...args) {
+                if (!counterMetric) {
+                    counterMetric = findOrCreateCounter({
+                        name,
+                        help,
+                        ...params,
+                    });
+                }
+
                 counterMetric.inc(1);
                 super(...args);
             }

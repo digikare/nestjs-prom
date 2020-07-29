@@ -1,8 +1,9 @@
-
 import * as client from 'prom-client';
 import { IMetricArguments } from '../interfaces';
 
 type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
+
+const registries = new Map<string, client.Registry>();
 
 export function getMetricToken(type: string, name: string) {
   return `${name}${type}`;
@@ -14,6 +15,19 @@ export function getRegistryName(name: string) {
 
 export function getOptionsName(name: string) {
   return `${name}PromOptions`;
+}
+
+export function getRegistry(name?: string) {
+  if (!name) {
+    return getDefaultRegistry();
+  }
+
+  if (registries.has(name) === false) {
+    const registry = new client.Registry();
+    registries.set(name, registry);
+  }
+
+  return registries.get(name);
 }
 
 export function getDefaultRegistry() {
@@ -34,7 +48,7 @@ export const findOrCreateMetric = ({
   registry?: client.Registry;
 }): client.Metric<string> => {
 
-  const register = registry ?? client.register;
+  const register = registry ?? getDefaultRegistry();
 
   let metric: client.Metric<string> = register.getSingleMetric(name);
   if (!metric) {
