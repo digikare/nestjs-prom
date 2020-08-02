@@ -54,7 +54,7 @@ export class PromModule {
         buckets: requestsMetricsOptions.timeBuckets
       });
 
-      moduleForRoot.providers = [...moduleForRoot.providers , requestsTotalCounterProvider, requestsDurationSecondsProvider];
+      moduleForRoot.providers = [...moduleForRoot.providers, requestsTotalCounterProvider, requestsDurationSecondsProvider];
       moduleForRoot.exports = [...moduleForRoot.exports, requestsTotalCounterProvider, requestsDurationSecondsProvider];
     }
 

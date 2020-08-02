@@ -1,5 +1,6 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Counter, Histogram } from "prom-client";
+import * as responseTime from "response-time";
 import { InjectCounterMetric, InjectHistogramMetric } from "../common";
 
 @Injectable()
@@ -11,31 +12,17 @@ export class InboundMiddleware implements NestMiddleware {
   ) {}
 
   use (req, res, next) {
+    responseTime((req, res, time) => {
+      const { url, method } = req;
+      const path = url;
 
-    const url = req.baseUrl;
-    const method = req.method;
+      if (path.match(/\/metrics(\?.*?)?$/) === null && path !== "/favicon.ico") {
+        const status = res.statusCode;
+        const labels = { method, status, path };
 
-    // ignore favicon
-    if (url == '/favicon.ico') {
-      next();
-      return ;
-    }
-
-    // ignore metrics itself
-    // TODO: need improvment to check correctly our current controller
-    if (url.match(/\/metrics(\?.*?)?$/)) {
-      next();
-      return ;
-    }
-
-    const labelValues = {
-      method,
-      status: res.statusCode,
-      path: url,
-    };
-
-    this._requestsTotal.inc(labelValues, 1);
-
-    next();
+        this._requestsTotal.inc(labels);
+        this._requestsDuration.observe(labels, time / 1000);
+      }
+    })(req, res, next);
   }
 }
