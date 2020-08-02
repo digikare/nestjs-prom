@@ -1,6 +1,7 @@
 import * as PromClient from 'prom-client';
 export * from './metric.type';
 export * from './prom-options.interface';
+export * from './requests.metrics-options.interface';
 
 // map class to expose
 export type CounterMetric = PromClient.Counter<string>;

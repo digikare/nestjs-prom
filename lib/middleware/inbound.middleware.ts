@@ -1,12 +1,13 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
-import { Counter } from "prom-client";
-import { InjectCounterMetric } from "../common";
+import { Counter, Histogram } from "prom-client";
+import { InjectCounterMetric, InjectHistogramMetric } from "../common";
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
 
   constructor(
-    @InjectCounterMetric('http_requests_total') private readonly _counter: Counter<string>,
+    @InjectCounterMetric('http_requests_total') private readonly _requestsTotal: Counter<string>,
+    @InjectHistogramMetric('http_requests_duration_seconds') private readonly _requestsDuration: Histogram<string>,
   ) {}
 
   use (req, res, next) {
@@ -33,7 +34,7 @@ export class InboundMiddleware implements NestMiddleware {
       path: url,
     };
 
-    this._counter.inc(labelValues, 1);
+    this._requestsTotal.inc(labelValues, 1);
 
     next();
   }
