@@ -1,7 +1,9 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
 import { Counter, Histogram } from "prom-client";
 import * as responseTime from "response-time";
+
 import { InjectCounterMetric, InjectHistogramMetric } from "../common";
+import { normalizeStatusCode } from "./normalizers";
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
@@ -17,7 +19,7 @@ export class InboundMiddleware implements NestMiddleware {
       const path = url;
 
       if (path.match(/\/metrics(\?.*?)?$/) === null && path !== "/favicon.ico") {
-        const status = res.statusCode;
+        const status = normalizeStatusCode(res.statusCode);
         const labels = { method, status, path };
 
         this._requestsTotal.inc(labels);
