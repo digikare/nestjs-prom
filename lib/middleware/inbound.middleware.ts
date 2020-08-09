@@ -4,7 +4,7 @@ import * as responseTime from "response-time";
 
 import { InjectCounterMetric, InjectHistogramMetric } from "../common";
 import { InboundMiddlewareOptions } from "./inbound.middleware-options"
-import { normalizeStatusCode } from "./normalizers";
+import { normalizePath, normalizeStatusCode } from "./normalizers";
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
@@ -18,7 +18,7 @@ export class InboundMiddleware implements NestMiddleware {
   use (req, res, next) {
     responseTime((req, res, time) => {
       const { url, method } = req;
-      const path = url;
+      const path = normalizePath(url, this._options.pathNormalizationExtraMasks, "#val");
 
       if (path !== this._options.metricsPath && path !== "/favicon.ico") {
         const status = normalizeStatusCode(res.statusCode);
