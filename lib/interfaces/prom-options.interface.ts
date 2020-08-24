@@ -1,6 +1,8 @@
+import { Type } from '@nestjs/common';
+import { ModuleMetadata } from '@nestjs/common/interfaces';
 
 export interface PromModuleOptions {
-  [key: string]: any;
+  // [key: string]: any;
 
   /**
    * Enable default metrics
@@ -36,4 +38,21 @@ export interface PromModuleOptions {
   };
 
   customUrl?: string;
+}
+
+export interface TypeOrmOptionsFactory {
+  createTypeOrmOptions(
+    connectionName?: string,
+  ): Promise<PromModuleOptions> | PromModuleOptions;
+}
+
+export interface PromModuleAsyncOptions
+  extends Pick<ModuleMetadata, 'imports'> {
+  name?: string;
+  useExisting?: Type<TypeOrmOptionsFactory>;
+  useClass?: Type<TypeOrmOptionsFactory>;
+  useFactory?: (
+    ...args: any[]
+  ) => Promise<PromModuleOptions> | PromModuleOptions;
+  inject?: any[];
 }

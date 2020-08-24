@@ -11,10 +11,20 @@ import { AppController } from "./app.controller";
             },
             useHttpCounterMiddleware: true,
             withGlobalInterceptor: true,
+            labelsProvider: 'PROM_LABEL_TEST'
         })
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [
+        AppService,
+        {
+            provide: 'PROM_LABEL_TEST',
+            useValue: {
+                toto: 'true',
+                tata: 1,
+            },
+        },
+    ],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {

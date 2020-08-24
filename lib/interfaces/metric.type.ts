@@ -37,5 +37,5 @@ export interface IMetricArguments {
   name: string;
   help?: string;
   labelNames?: string[];
-  registry?: PromClient.Registry;
+  registry?: PromClient.Registry | string;
 }

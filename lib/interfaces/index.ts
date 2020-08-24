@@ -9,3 +9,5 @@ export type HistogramMetric = PromClient.Histogram<string>;
 export type SummaryMetric = PromClient.Summary<string>;
 export type GenericMetric = PromClient.Metric<string>;
 export type Registry = PromClient.Registry;
+
+export type PromLabels = { [key: string]: string | number };

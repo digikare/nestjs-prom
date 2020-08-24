@@ -25,6 +25,12 @@ export function getOptionsName(name: string) {
   return `${name}PromOptions`;
 }
 
+/**
+ * Get a specific registry by name
+ * If the name arg is omitted, return the default registry
+ * 
+ * @param {string} name Registry name
+ */
 export function getRegistry(name?: string) {
   if (!name) {
     return getDefaultRegistry();
@@ -38,6 +44,9 @@ export function getRegistry(name?: string) {
   return registries.get(name);
 }
 
+/**
+ * return the default registry
+ */
 export function getDefaultRegistry() {
   return client.register;
 }
@@ -53,10 +62,17 @@ export const findOrCreateMetric = ({
   type: MetricType;
   help?: string;
   labelNames?: string[];
-  registry?: Registry;
+  registry?: Registry | string;
 }): GenericMetric => {
 
-  const register = registry ?? getDefaultRegistry();
+  let register = getDefaultRegistry();
+  if (registry) {
+    if (typeof registry === 'string') {
+      register = getRegistry(registry);
+    } else {
+      register = registry
+    }
+  }
 
   let metric: GenericMetric = register.getSingleMetric(name);
   if (!metric) {

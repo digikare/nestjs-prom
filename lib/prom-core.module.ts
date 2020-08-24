@@ -2,9 +2,11 @@ import {
   Global,
   DynamicModule,
   Module,
+  Provider,
+  Type,
 } from '@nestjs/common';
-import { PromModuleOptions } from './interfaces';
-import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
+import { PromModuleOptions, PromModuleAsyncOptions, PromLabels } from './interfaces';
+import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, PROM_OPTIONS, PROM_LABELS } from './prom.constants';
 
 import * as client from 'prom-client';
 import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
@@ -19,7 +21,6 @@ export class PromCoreModule {
   ): DynamicModule {
 
     const {
-      withDefaultsMetrics,
       registryName,
       prefix,
     } = options;
@@ -34,13 +35,16 @@ export class PromCoreModule {
     }
 
     const promRegistryOptionsProvider = {
-      provide: DEFAULT_PROM_OPTIONS,
+      provide: PROM_OPTIONS,
       useValue: options,
     }
 
-    const registryProvider = {
+    const registryProvider: Provider = {
       provide: promRegistryName,
-      useFactory: (): Registry => {
+      inject: [PROM_OPTIONS],
+      useFactory: (
+        opts: PromModuleOptions
+      ): Registry => {
 
         let registry = client.register;
         if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
@@ -50,11 +54,12 @@ export class PromCoreModule {
         // clear here for HMR support
         registry.clear();
         
-        if (options.defaultLabels) {
-          registry.setDefaultLabels(options.defaultLabels)
-        }
-
-        if (withDefaultsMetrics !== false) {
+        const defaultLabels: PromLabels = {
+          ...(opts.defaultLabels ?? {}),
+        };
+        registry.setDefaultLabels(defaultLabels);
+        
+        if (opts.withDefaultsMetrics !== false) {
           const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
             register: registry,
           };
@@ -66,7 +71,6 @@ export class PromCoreModule {
 
         return registry;
       },
-
     }
 
     return {
@@ -80,5 +84,138 @@ export class PromCoreModule {
         registryProvider,
       ],
     };
+  }
+
+  static forRootAsync(
+    options: PromModuleAsyncOptions = {},
+  ): DynamicModule {
+
+    const {
+      registryName,
+      prefix,
+    } = options;
+
+    const promRegistryName = registryName ?
+      getRegistryName(registryName)
+      : DEFAULT_PROM_REGISTRY;
+
+    const promRegistryNameProvider = {
+      provide: PROM_REGISTRY_NAME,
+      useValue: promRegistryName,
+    }
+
+    const promRegistryOptionsProvider = {
+      provide: PROM_OPTIONS,
+      useValue: options,
+    }
+
+    const registryProvider: Provider = {
+      provide: promRegistryName,
+      useFactory: (
+        
+      ): Registry => {
+
+        let registry = client.register;
+        if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
+          registry = new Registry();
+        }
+
+        // clear here for HMR support
+        registry.clear();
+
+        // registry.setDefaultLabels(defaultLabels);
+
+        if (withDefaultsMetrics !== false) {
+          const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
+            register: registry,
+          };
+          if (prefix) {
+            defaultMetricsOptions.prefix = prefix;
+          }
+          collectDefaultMetrics(defaultMetricsOptions);
+        }
+
+        return registry;
+      },
+    }
+
+    providers.push(
+      promRegistryNameProvider,
+      promRegistryOptionsProvider,
+      registryProvider,
+    );
+
+    return {
+      module: PromCoreModule,
+      imports: options.imports,
+      providers: [],
+      exports: [
+        registryProvider,
+      ],
+    };
+
+  }
+
+  private static createAsyncProviders(
+    options: PromModuleAsyncOptions,
+  ): Provider[] {
+    if (options.useExisting || options.useFactory) {
+      return [this.createAsyncOptionsProvider(options)];
+    }
+    const useClass = options.useClass as Type<PromModuleOptions>;
+    return [
+      this.createAsyncOptionsProvider(options),
+      {
+        provide: useClass,
+        useClass,
+      },
+    ];
+  }
+
+  private static createAsyncOptionsProvider(
+    options: PromModuleAsyncOptions,
+  ): Provider {
+    if (options.useFactory) {
+      return {
+        provide: PROM_OPTIONS,
+        useFactory: options.useFactory,
+        inject: options.inject || [],
+      };
+    }
+    // `as Type<TypeOrmOptionsFactory>` is a workaround for microsoft/TypeScript#31603
+    const inject = [
+      (options.useClass || options.useExisting) as Type<PromModuleAsyncOptions>,
+    ];
+    return {
+      provide: PROM_OPTIONS,
+      useFactory: async (optionsFactory: PromModuleAsyncOptions) =>
+        await optionsFactory.createTypeOrmOptions(options.name),
+      inject,
+    };
+  }
+
+  private static async createRegistryFactory(): Promise<Registry> {
+    let registry = client.register;
+
+    // TODO: support custom registry here
+    // if (promRegistryName !== DEFAULT_PROM_REGISTRY) {
+    //   registry = new Registry();
+    // }
+
+    registry.clear();
+
+    registry.setDefaultLabels({});
+
+    // if (withDefaultsMetrics !== false) {
+    //   const defaultMetricsOptions: DefaultMetricsCollectorConfiguration = {
+    //     register: registry,
+    //   };
+    //   if (prefix) {
+    //     defaultMetricsOptions.prefix = prefix;
+    //   }
+    //   collectDefaultMetrics(defaultMetricsOptions);
+    // }
+
+    return registry;
   }
 }

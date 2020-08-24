@@ -60,4 +60,14 @@ export class PromModule {
 
     return moduleForRoot;
   }
+
+  static forRootAsync(
+    options: PromModuleOptions = {},
+  ): DynamicModule {
+    const moduleForRoot = PromModule.forRoot(options);
+    moduleForRoot.imports = [
+      PromCoreModule.forRootAsync(options),
+    ];
+    return moduleForRoot;
+  }
 }
