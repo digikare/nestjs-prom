@@ -1,4 +1,5 @@
 
-export const DEFAULT_PROM_REGISTRY = 'PromRegistry';
-export const DEFAULT_PROM_OPTIONS = 'PromOptions';
-export const PROM_REGISTRY_NAME = 'PromRegistryName';
+export const DEFAULT_PROM_REGISTRY = Symbol('PromRegistry');
+export const PROM_OPTIONS = Symbol('PromOptions');
+export const PROM_REGISTRY_NAME = Symbol('PromRegistryName');
+export const PROM_LABELS = Symbol('PromLabels');
