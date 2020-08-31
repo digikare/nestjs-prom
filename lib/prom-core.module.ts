@@ -55,6 +55,9 @@ export class PromCoreModule {
 
     return {
       module: PromCoreModule,
+      imports: [
+        ...options.imports ?? [],
+      ],
       providers: [
         ...this.createAsyncProviders(options),
         registryProvider,
@@ -91,7 +94,6 @@ export class PromCoreModule {
         inject: options.inject || [],
       };
     }
-    // `as Type<TypeOrmOptionsFactory>` is a workaround for microsoft/TypeScript#31603
     const inject = [
       (options.useClass || options.useExisting) as Type<PromModuleAsyncOptions>,
     ];
