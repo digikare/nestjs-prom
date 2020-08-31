@@ -1,8 +1,19 @@
 import { Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 
+export interface PromModuleCoreOptions {
+  customRegistry?: boolean;
+  prefix?: string;
+
+  /**
+   * Set the defaults labels
+   */
+  defaultLabels?: {
+    [key: string]: string | number,
+  };
+}
+
 export interface PromModuleOptions {
-  // [key: string]: any;
 
   /**
    * Enable default metrics
@@ -22,12 +33,17 @@ export interface PromModuleOptions {
   useHttpCounterMiddleware?: boolean;
 
   /**
+   * Catch exception?
+   */
+  withExceptionFilter?: boolean;
+
+  /**
    * Eanble or not the global interceptor
    * Usefull to catch exception thrown by your app
    */
   withGlobalInterceptor?: boolean;
 
-  registryName?: string;
+  customRegistry?: boolean;
   prefix?: string;
 
   /**
@@ -40,19 +56,17 @@ export interface PromModuleOptions {
   customUrl?: string;
 }
 
-export interface TypeOrmOptionsFactory {
-  createTypeOrmOptions(
-    connectionName?: string,
-  ): Promise<PromModuleOptions> | PromModuleOptions;
+export interface PromModuleAsyncOptionsFactory {
+  createPromOptions(): Promise<PromModuleCoreOptions> | PromModuleCoreOptions;
 }
 
 export interface PromModuleAsyncOptions
   extends Pick<ModuleMetadata, 'imports'> {
   name?: string;
-  useExisting?: Type<TypeOrmOptionsFactory>;
-  useClass?: Type<TypeOrmOptionsFactory>;
+  useExisting?: Type<PromModuleAsyncOptionsFactory>;
+  useClass?: Type<PromModuleAsyncOptionsFactory>;
   useFactory?: (
     ...args: any[]
-  ) => Promise<PromModuleOptions> | PromModuleOptions;
+  ) => Promise<PromModuleCoreOptions> | PromModuleCoreOptions;
   inject?: any[];
 }

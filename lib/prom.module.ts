@@ -1,6 +1,6 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { PromCoreModule } from './prom-core.module';
-import { PromModuleOptions } from './interfaces';
+import { PromModuleOptions, PromModuleAsyncOptions } from './interfaces';
 import { PromController } from './prom.controller';
 import { PromService } from './prom.service';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
@@ -35,7 +35,10 @@ export class PromModule {
 
     // default push default controller
     if (withDefaultController !== false) {
-      moduleForRoot.controllers = [...moduleForRoot.controllers, PromController.forRoot(customUrl)];
+      moduleForRoot.controllers = [
+        ...moduleForRoot.controllers,
+        PromController.forRoot(customUrl),
+      ];
     }
 
     if (withGlobalInterceptor !== false) {
@@ -62,11 +65,13 @@ export class PromModule {
   }
 
   static forRootAsync(
-    options: PromModuleOptions = {},
+    asyncOptions: PromModuleAsyncOptions = {},
+    options: Pick<PromModuleOptions, 'withDefaultController' | 'withDefaultsMetrics' | 'withExceptionFilter' | 'withGlobalInterceptor' | 'customUrl'> = {},
   ): DynamicModule {
     const moduleForRoot = PromModule.forRoot(options);
+    // override imports core for Async
     moduleForRoot.imports = [
-      PromCoreModule.forRootAsync(options),
+      PromCoreModule.forRootAsync(asyncOptions),
     ];
     return moduleForRoot;
   }

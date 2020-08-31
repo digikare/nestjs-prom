@@ -8,22 +8,16 @@ import { AppController } from "./app.controller";
         PromModule.forRoot({
             defaultLabels: {
                 app: 'v1.0.0',
+                toto: 'true',
+                tata: 1,
             },
             useHttpCounterMiddleware: true,
             withGlobalInterceptor: true,
-            labelsProvider: 'PROM_LABEL_TEST'
         })
     ],
     controllers: [AppController],
     providers: [
         AppService,
-        {
-            provide: 'PROM_LABEL_TEST',
-            useValue: {
-                toto: 'true',
-                tata: 1,
-            },
-        },
     ],
 })
 export class AppModule implements NestModule {
