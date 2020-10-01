@@ -152,7 +152,6 @@ describe('PromModule', () => {
         });
     });
 
-    // app_MyObj_instances_total
     describe(`@PromGauge()`, () => {
       it('app_test_gauge_1 not defined in /metrics', (done) => {
         request(server)
