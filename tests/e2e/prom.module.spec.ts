@@ -28,7 +28,7 @@ describe('PromModule', () => {
             .end((err) => {
                 if (err) {
                     throw err;
-                } 
+                }
                 done();
             });
     });
@@ -45,7 +45,7 @@ describe('PromModule', () => {
                     expect(/app_AppController_PromMethodCounter_1_calls_total/.test(text)).toBeFalsy()
                     done();
                 });
-        }); 
+        });
 
         it('app_AppController_PromMethodCounter_1_calls_total present in /metrics', async () => {
 
@@ -150,5 +150,67 @@ describe('PromModule', () => {
                 .expect(/http_requests_total{[^}]*path="\/PromInstanceCounter_1"[^}]*} 1/)
                 .expect(/app_MyObj_instances_total{app="v1\.0\.0"} 1/);
         });
+    });
+
+    // app_MyObj_instances_total
+    describe(`@PromGauge()`, () => {
+      it('app_test_gauge_1 not defined in /metrics', (done) => {
+        request(server)
+          .get('/metrics')
+          .expect(200)
+          .end((err, { text }) => {
+            if (err) throw err;
+            expect(text).toBeTruthy();
+            expect(/http_requests_total$/.test(text)).toBeFalsy();
+            expect(/app_test_gauge_1{app="1\.0\.0"}/.test(text)).toBeFalsy();
+            done();
+          });
+      });
+
+      it('app_test_gauge_1 (increments and decrements) defined in /metrics', async () => {
+        const incrementsCount = 20;
+        const decrementsCount = 15;
+
+
+        for (let i = 0; i < incrementsCount; i++) {
+          await request(server)
+            .get('/PromGauge_1_increment')
+            .expect(200)
+            .expect('PromGauge_1_increment');
+        }
+
+        for (let i = 0; i < decrementsCount; i++) {
+          await request(server)
+            .get('/PromGauge_1_decrement')
+            .expect(200)
+            .expect('PromGauge_1_decrement');
+        }
+
+        return request(server)
+          .get('/metrics')
+          .expect(200)
+          .expect(new RegExp(
+            'http_requests_total{[^}]*path="\\/PromGauge_1_increment"[^}]*} ' + incrementsCount
+          ))
+          .expect(new RegExp(
+            'http_requests_total{[^}]*path="\\/PromGauge_1_decrement"[^}]*} ' + decrementsCount
+          ))
+          .expect(new RegExp('app_test_gauge_1{app="v1\\.0\\.0"} ' + (incrementsCount - decrementsCount)));
+      });
+
+      it('app_test_gauge_1 (set) defined in /metrics', async () => {
+        await request(server)
+          .get('/PromGauge_1_set')
+          .expect(200)
+          .expect('PromGauge_1_set');
+
+        return request(server)
+          .get('/metrics')
+          .expect(200)
+          .expect(new RegExp(
+            'http_requests_total{[^}]*path="\\/PromGauge_1_set"[^}]*} ' + 1
+          ))
+          .expect(new RegExp('app_test_gauge_1{app="v1\\.0\\.0"} ' + 10));
+      });
     });
 });

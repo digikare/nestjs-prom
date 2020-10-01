@@ -91,13 +91,6 @@ export const findOrCreateMetric = ({
 
   }
 
-  if (metric instanceof client.Counter === false) {
-    return new client.Counter({
-      name: getMetricToken(type, name),
-      help: help || `${name} ${type}`,
-    });
-  }
-
   return metric;
 }
 
