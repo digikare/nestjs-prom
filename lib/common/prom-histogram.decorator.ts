@@ -2,12 +2,7 @@ import { createParamDecorator } from '@nestjs/common';
 import { findOrCreateHistogram } from './prom.utils';
 import { IMetricArguments } from '../interfaces';
 
-export interface IPromHistogramDecoratorArg {
-  name: string;
-  help?: string;
-};
-
-export const PromHistogram = createParamDecorator((data: IPromHistogramDecoratorArg | string) => {
+export const PromHistogram = createParamDecorator((data: IMetricArguments | string) => {
 
   const arg: Partial<IMetricArguments> = {};
 
@@ -17,6 +12,7 @@ export const PromHistogram = createParamDecorator((data: IPromHistogramDecorator
   if (typeof data === 'object') {
     arg.name = data.name;
     arg.help = data?.help;
+    arg.labelNames = data.labelNames;
   }
 
   if (!arg.name || arg.name.length === 0) {

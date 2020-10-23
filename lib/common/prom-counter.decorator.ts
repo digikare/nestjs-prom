@@ -2,12 +2,7 @@ import { createParamDecorator } from '@nestjs/common';
 import { findOrCreateCounter } from './prom.utils';
 import { IMetricArguments } from '../interfaces';
 
-export interface IPromCounterDecoratorArg {
-  name: string;
-  help?: string;
-};
-
-export const PromCounter = createParamDecorator((data: IPromCounterDecoratorArg | string) => {
+export const PromCounter = createParamDecorator((data: IMetricArguments | string) => {
 
   const arg: Partial<IMetricArguments> = {};
 
@@ -16,7 +11,8 @@ export const PromCounter = createParamDecorator((data: IPromCounterDecoratorArg 
   }
   if (typeof data === 'object') {
     arg.name = data.name;
-    arg.help = data?.help;
+    arg.help = data.help;
+    arg.labelNames = data.labelNames;
   }
 
   if (!arg.name || arg.name.length === 0) {

@@ -1,11 +1,11 @@
 import * as client from 'prom-client';
-import { 
-  IMetricArguments, 
-  GenericMetric, 
-  CounterMetric, 
-  GaugeMetric, 
-  HistogramMetric, 
-  SummaryMetric, 
+import {
+  IMetricArguments,
+  GenericMetric,
+  CounterMetric,
+  GaugeMetric,
+  HistogramMetric,
+  SummaryMetric,
   Registry,
 } from '../interfaces';
 
@@ -57,41 +57,47 @@ export const findOrCreateMetric = ({
 }): GenericMetric => {
 
   const register = registry ?? getDefaultRegistry();
-
   let metric: GenericMetric = register.getSingleMetric(name);
-  if (!metric) {
 
-    switch (type) {
-      case "Gauge":
-        return new client.Gauge({
-          name: name,
-          help: help || `${name} ${type}`,
-          labelNames,
-        });
-      case "Histogram":
-        return new client.Histogram({
-          name: name,
-          help: help || `${name} ${type}`,
-          labelNames,
-        });
-      case "Summary":
-        return new client.Summary({
-          name: name,
-          help: help || `${name} ${type}`,
-          labelNames,
-        });
-      case "Counter":
-      default:
-        return new client.Counter({
-          name: name,
-          help: help || `${name} ${type}`,
-          labelNames,
-        });
-    }
-
+  switch (type) {
+    case "Gauge":
+      if (metric && metric instanceof client.Gauge) {
+        return metric;
+      }
+      return new client.Gauge({
+        name: name,
+        help: help || `${name} ${type}`,
+        labelNames,
+      });
+    case "Histogram":
+      if (metric && metric instanceof client.Histogram) {
+        return metric;
+      }
+      return new client.Histogram({
+        name: name,
+        help: help || `${name} ${type}`,
+        labelNames,
+      });
+    case "Summary":
+      if (metric && metric instanceof client.Summary) {
+        return metric;
+      }
+      return new client.Summary({
+        name: name,
+        help: help || `${name} ${type}`,
+        labelNames,
+      });
+    case "Counter":
+    default:
+      if (metric && metric instanceof client.Counter) {
+        return metric;
+      }
+      return new client.Counter({
+        name: name,
+        help: help || `${name} ${type}`,
+        labelNames,
+      });
   }
-
-  return metric;
 }
 
 export const findOrCreateCounter = ({

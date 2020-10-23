@@ -2,12 +2,7 @@ import { createParamDecorator } from '@nestjs/common';
 import { findOrCreateGauge } from './prom.utils';
 import { IMetricArguments } from '../interfaces';
 
-export interface IPromGaugeDecoratorArg {
-  name: string;
-  help?: string;
-};
-
-export const PromGauge = createParamDecorator((data: IPromGaugeDecoratorArg | string) => {
+export const PromGauge = createParamDecorator((data: IMetricArguments | string) => {
 
   const arg: Partial<IMetricArguments> = {};
 
@@ -17,6 +12,7 @@ export const PromGauge = createParamDecorator((data: IPromGaugeDecoratorArg | st
   if (typeof data === 'object') {
     arg.name = data.name;
     arg.help = data?.help;
+    arg.labelNames = data.labelNames;
   }
 
   if (!arg.name || arg.name.length === 0) {
