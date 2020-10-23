@@ -4,4 +4,4 @@ export * from './prom-counter.decorator';
 export * from './prom-gauge.decorator';
 export * from './prom-histogram.decorator';
 export * from './prom-summary.decorator';
-export { getMetricToken } from './prom.utils';
+export * from './prom.utils';

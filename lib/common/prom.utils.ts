@@ -14,7 +14,7 @@ type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
 
 const registries = new Map<string, Registry>();
 
-export function getMetricToken(type: string, name: string) {
+export function getMetricToken(type: MetricType, name: string) {
   return `${name}${type}`;
 }
 
