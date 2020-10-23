@@ -3,19 +3,19 @@ import { findOrCreateCounter, findOrCreateGauge, findOrCreateHistogram } from '.
 
 @Injectable()
 export class PromService {
-  getCounterMetric(name: string) {
-    return findOrCreateCounter({ name });
+  getCounterMetric(name: string, labelNames?: string[]) {
+    return findOrCreateCounter({ name, labelNames });
   }
 
-  getGaugeMetric(name: string) {
-    return findOrCreateGauge({ name });
+  getGaugeMetric(name: string, labelNames?: string[]) {
+    return findOrCreateGauge({ name, labelNames });
   }
 
-  getHistogramMetric(name: string) {
-    return findOrCreateHistogram({ name });
+  getHistogramMetric(name: string, labelNames?: string[]) {
+    return findOrCreateHistogram({ name, labelNames });
   }
 
-  getSummaryMetric(name: string) {
-    return findOrCreateHistogram({ name });
+  getSummaryMetric(name: string, labelNames?: string[]) {
+    return findOrCreateHistogram({ name, labelNames });
   }
 }
