@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.0.0 - 2020-03-26
+## 1.0.0 - 2020-10-23
 
 ### BREAKING CHANGE
 - Replace decorators
@@ -11,7 +11,18 @@ All notable changes to this project will be documented in this file.
   - `@InjectHistogramMetric()` -> `@PromHistogram()`
   - `@InjectSummaryMetric()` -> `@PromSummary()`
 - Remove `PromModule.forMetrics()` no need anymore
+- Option removed:
+  - `useHttpCounterMiddleware`
+  - `withGlobalInterceptor`
+- Remove `Interceptor` replaced by middleware
+  - `http_requests_total` replaced by `http_requests_count`
+- Option marked as deprecated:
+  - `customUrl` is replaced by `metricPath`
+- Add `withHttpMiddleware` options
+
 - Rewrite internally how to manage
+- Adding Gauge test (PR 42 - thanks @dlukanin)
+- Add request duration on middleware (PR 36 - thanks @litichevskiydv)
 
 ## 0.2.3 - 2020-07-26
 
