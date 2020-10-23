@@ -8,6 +8,7 @@ describe('PromModule', () => {
 
     let server: Server;
     let app: INestApplication;
+    const metricPath = '/mymetrics';
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
@@ -19,9 +20,9 @@ describe('PromModule', () => {
         await app.init();
     });
 
-    it(`/metrics should works`, (done) => {
+    it(`${metricPath} should works`, (done) => {
         request(server)
-            .get('/metrics')
+            .get(metricPath)
             .expect(200)
             .expect('Content-Type', /text\/plain/) // expect correct content-type
             .expect(/app=\"v1\.0\.0\"/) // expect having defaultLabels
@@ -34,20 +35,22 @@ describe('PromModule', () => {
     });
 
     describe('@PromMethodCounter()', () => {
-        it('app_AppController_PromMethodCounter_1_calls_total not present in /metrics', (done) => {
+        it(`app_AppController_PromMethodCounter_1_calls_total not present in ${metricPath}`, (done) => {
             request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
                 .end((err, { text }) => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
-                    expect(/http_requests_total$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
+                    expect(/http_requests_sum$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
                     expect(/app_AppController_PromMethodCounter_1_calls_total/.test(text)).toBeFalsy()
                     done();
                 });
         });
 
-        it('app_AppController_PromMethodCounter_1_calls_total present in /metrics', async () => {
+        it(`app_AppController_PromMethodCounter_1_calls_total present in ${metricPath}`, async () => {
 
             await request(server)
                 .get('/PromMethodCounter_1')
@@ -55,29 +58,33 @@ describe('PromModule', () => {
                 .expect('PromMethodCounter_1');
 
             return request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
-                .expect(/http_requests_total{[^}]*path="\/PromMethodCounter_1"[^}]*} 1/)
+                .expect(/http_requests_count{[^}]*path="\/PromMethodCounter_1"[^}]*} 1/)
+                .expect(/http_requests_bucket{[^}]*path="\/PromMethodCounter_1"[^}]*} 1/)
+                .expect(/http_requests_sum{[^}]*path="\/PromMethodCounter_1"[^}]*} [0-9]+(\.[0-9]+)?/)
                 .expect(/app_AppController_PromMethodCounter_1_calls_total/)
                 ;
         });
     });
 
     describe('@PromCounter()', () => {
-        it('app_test_counter_1 not defined in /metrics', (done) => {
+        it(`app_test_counter_1 not defined in ${metricPath}`, (done) => {
             request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
                 .end((err, { text }) => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
-                    expect(/http_requests_total$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
+                    expect(/http_requests_sum$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
                     expect(/app_test_counter_1{app="1\.0\.0"}/.test(text)).toBeFalsy();
                     done();
                 });
         });
 
-        it('app_test_counter_1 defined in /metrics', async () => {
+        it(`app_test_counter_1 defined in ${metricPath}`, async () => {
 
             await request(server)
                 .get('/PromCounter_1')
@@ -85,29 +92,33 @@ describe('PromModule', () => {
                 .expect('PromCounter_1');
 
             return request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
-                .expect(/http_requests_total{[^}]*path="\/PromCounter_1"[^}]*} 1/)
+                .expect(/http_requests_count{[^}]*path="\/PromCounter_1"[^}]*} 1/)
+                .expect(/http_requests_bucket{[^}]*path="\/PromCounter_1"[^}]*} 1/)
+                .expect(/http_requests_sum{[^}]*path="\/PromCounter_1"[^}]*} [0-9]+(\.[0-9]+)?/)
                 .expect(/app_test_counter_1{app="v1\.0\.0"} 1/);
         });
     });
 
 
     describe('Service Injection', () => {
-        it('app_counter_service_1 not defined in /metrics', (done) => {
+        it(`app_counter_service_1 not defined in ${metricPath}`, (done) => {
             request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
                 .end((err, { text }) => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
-                    expect(/http_requests_total$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
+                    expect(/http_requests_sum$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
                     expect(/^app_counter_service_1{app="1\.0\.0"}/.test(text)).toBeFalsy();
                     done();
                 });
         });
 
-        it('app_counter_service_1 defined in /metrics', async () => {
+        it(`app_counter_service_1 defined in ${metricPath}`, async () => {
 
             await request(server)
                 .get('/PromCounterService_1')
@@ -115,29 +126,33 @@ describe('PromModule', () => {
                 .expect('PromCounterService_1');
 
             return request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
-                .expect(/http_requests_total{[^}]*path="\/PromCounterService_1"[^}]*} 1/)
+                .expect(/http_requests_count{[^}]*path="\/PromCounterService_1"[^}]*} 1/)
+                .expect(/http_requests_count{[^}]*path="\/PromCounterService_1"[^}]*} 1/)
+                .expect(/http_requests_sum{[^}]*path="\/PromCounterService_1"[^}]*} [0-9]+(\.[0-9]+)?/)
                 .expect(/app_counter_service_1{app="v1\.0\.0"} 1/);
         });
     });
 
     // app_MyObj_instances_total
     describe(`@PromInstanceCounter()`, () => {
-        it('app_MyObj_instances_total not defined in /metrics', (done) => {
+        it(`app_MyObj_instances_total not defined in ${metricPath}`, (done) => {
             request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
                 .end((err, { text }) => {
                     if (err) throw err;
                     expect(text).toBeTruthy();
-                    expect(/http_requests_total$/.test(text)).toBeFalsy();
+                    expect(/http_requests_bucket$/.test(text)).toBeFalsy();
+                    expect(/http_requests_sum$/.test(text)).toBeFalsy();
+                    expect(/http_requests_count$/.test(text)).toBeFalsy();
                     expect(/app_MyObj_instances_total{app="1\.0\.0"}/.test(text)).toBeFalsy();
                     done();
                 });
         });
 
-        it('app_MyObj_instances_total defined in /metrics', async () => {
+        it(`app_MyObj_instances_total defined in ${metricPath}`, async () => {
 
             await request(server)
                 .get('/PromInstanceCounter_1')
@@ -145,9 +160,11 @@ describe('PromModule', () => {
                 .expect('PromInstanceCounter_1');
 
             return request(server)
-                .get('/metrics')
+                .get(metricPath)
                 .expect(200)
-                .expect(/http_requests_total{[^}]*path="\/PromInstanceCounter_1"[^}]*} 1/)
+                .expect(/http_requests_bucket{[^}]*path="\/PromInstanceCounter_1"[^}]*} 1/)
+                .expect(/http_requests_count{[^}]*path="\/PromInstanceCounter_1"[^}]*} 1/)
+                .expect(/http_requests_sum{[^}]*path="\/PromInstanceCounter_1"[^}]*} [0-9]+(\.[0-9]+)?/)
                 .expect(/app_MyObj_instances_total{app="v1\.0\.0"} 1/);
         });
     });

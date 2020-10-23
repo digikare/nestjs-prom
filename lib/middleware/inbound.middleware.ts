@@ -9,23 +9,17 @@ import { normalizePath, normalizeStatusCode } from '../utils';
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
 
-  private readonly _requestsTotal: Counter<string>;
-  private readonly _requestsDuration: Histogram<string>;
+  private readonly _histogram: Histogram<string>;
   private readonly defaultBuckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10];
 
   constructor(
     @Inject(DEFAULT_PROM_OPTIONS) private readonly _options: PromModuleOptions,
     private readonly _service: PromService,
   ) {
-    this._requestsTotal = this._service.getCounter({
-      name: 'http_requests_total',
-      help: 'HTTP requests total counter',
-      labelNames: ['method', 'status', 'path'],
-    });
     const buckets: number[] = this._options.withHttpMiddleware?.timeBuckets ?? [];
-    this._requestsDuration = this._service.getHistogram({
-      name: 'http_requests_duration_seconds',
-      help: 'Duration of HTTP requests in seconds',
+    this._histogram = this._service.getHistogram({
+      name: 'http_requests',
+      help: 'HTTP requests - Duration in seconds',
       labelNames: ['method', 'status', 'path'],
       buckets: buckets.length > 0 ? buckets : this.defaultBuckets,
     });
@@ -45,8 +39,7 @@ export class InboundMiddleware implements NestMiddleware {
       const status = normalizeStatusCode(res.statusCode);
       const labels = { method, status, path };
 
-      this._requestsTotal.inc(labels);
-      this._requestsDuration.observe(labels, time / 1000);
+      this._histogram.observe(labels, time / 1000);
     })(req, res, next);
   }
 }
