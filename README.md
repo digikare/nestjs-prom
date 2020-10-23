@@ -116,6 +116,25 @@ export class AppController {
 }
 ```
 
+```typescript
+import { GaugeMetric, PromGauge } from '@digikare/nest-prom'; 
+
+@Controller()
+export class AppController {
+
+  @Get('/home')
+  home(
+    @PromGauge('app_gauge_1') gauge1: GaugeMetric,
+  ) {
+    gauge1.inc(); // 1
+    gauge1.inc(5); // 6
+    gauge1.dec(); // 5
+    gauge1.dec(2); // 3
+    gauge1.set(10); // 10
+  }
+}
+```
+
 ### Metric class instances
 
 If you want to counthow many instance of a specific class has been created:

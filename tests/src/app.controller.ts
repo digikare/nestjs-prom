@@ -1,11 +1,11 @@
 import { Get, Controller, HttpStatus, HttpException } from '@nestjs/common';
 import { AppService } from './app.service';
-import { 
-  CounterMetric, 
-  PromMethodCounter, 
-  PromInstanceCounter, 
-  PromCounter, 
-  PromService,
+import {
+  CounterMetric,
+  PromMethodCounter,
+  PromInstanceCounter,
+  PromCounter,
+  PromService, PromGauge, GaugeMetric,
 } from '../../lib';
 
 @PromInstanceCounter()
@@ -49,7 +49,6 @@ export class AppController {
     return 'PromCounterService_1';
   }
 
-
   @Get('PromInstanceCounter_1')
   PromInstanceCounter_1() {
     const objInstance = new MyObj(); // increment app_MyObj_instances_total
@@ -59,6 +58,30 @@ export class AppController {
   @Get('error_1')
   error_1() {
     throw new HttpException('error testing', HttpStatus.FORBIDDEN);
+  }
+
+  @Get('/PromGauge_1_increment')
+  PromGauge_1_increment(
+    @PromGauge('app_test_gauge_1') gauge: GaugeMetric,
+  ) {
+    gauge.inc();
+    return 'PromGauge_1_increment';
+  }
+
+  @Get('/PromGauge_1_decrement')
+  PromGauge_1_decrement(
+    @PromGauge('app_test_gauge_1') gauge: GaugeMetric,
+  ) {
+    gauge.dec();
+    return 'PromGauge_1_decrement';
+  }
+
+  @Get('/PromGauge_1_set')
+  PromGauge_1_set(
+    @PromGauge('app_test_gauge_1') gauge: GaugeMetric,
+  ) {
+    gauge.set(10);
+    return 'PromGauge_1_set';
   }
 
   // below - testing manually
