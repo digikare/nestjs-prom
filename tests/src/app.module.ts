@@ -9,20 +9,16 @@ import { AppController } from "./app.controller";
             defaultLabels: {
                 app: 'v1.0.0',
             },
-            useHttpCounterMiddleware: true,
-            withGlobalInterceptor: true,
+            withDefaultController: true,
+            metricPath: '/mymetrics',
+            withDefaultsMetrics: true,
+            withHttpMiddleware: {
+                enable: true,
+            }
         })
     ],
     controllers: [AppController],
     providers: [AppService],
 })
-export class AppModule implements NestModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(InboundMiddleware)
-            .exclude({
-                path: '/metrics',
-                method: RequestMethod.GET,
-            })
-            .forRoutes('*');
-    }
+export class AppModule {
 }

@@ -39,3 +39,7 @@ export interface IMetricArguments {
   labelNames?: string[];
   registry?: PromClient.Registry;
 }
+
+export interface IHistogramMetricArguments extends IMetricArguments {
+  buckets?: number[];
+}

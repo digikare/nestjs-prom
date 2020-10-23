@@ -1,47 +1,52 @@
-import { Injectable, NestMiddleware } from "@nestjs/common";
+import { Inject, Injectable, NestMiddleware } from "@nestjs/common";
 import { PromService } from '../prom.service';
-import { Counter } from 'prom-client';
+import { Counter, Histogram } from 'prom-client';
+import * as responseTime from "response-time";
+import { DEFAULT_PROM_OPTIONS } from '../prom.constants';
+import { PromModuleOptions } from '../interfaces';
+import { normalizePath, normalizeStatusCode } from '../utils';
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
 
-  private readonly _counter: Counter<string>;
+  private readonly _requestsTotal: Counter<string>;
+  private readonly _requestsDuration: Histogram<string>;
+  private readonly defaultBuckets = [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10];
 
   constructor(
+    @Inject(DEFAULT_PROM_OPTIONS) private readonly _options: PromModuleOptions,
     private readonly _service: PromService,
   ) {
-    this._counter = this._service.getCounter({
+    this._requestsTotal = this._service.getCounter({
       name: 'http_requests_total',
-      help: 'http_requests_total Number of inbound request',
-      labelNames: ['method', 'path']
+      help: 'HTTP requests total counter',
+      labelNames: ['method', 'status', 'path'],
+    });
+    const buckets: number[] = this._options.withHttpMiddleware?.timeBuckets ?? [];
+    this._requestsDuration = this._service.getHistogram({
+      name: 'http_requests_duration_seconds',
+      help: 'Duration of HTTP requests in seconds',
+      labelNames: ['method', 'status', 'path'],
+      buckets: buckets.length > 0 ? buckets : this.defaultBuckets,
     });
   }
 
   use (req, res, next) {
+    responseTime((req, res, time) => {
+      const { url, method } = req;
+      const path = normalizePath(url, this._options.withHttpMiddleware?.pathNormalizationExtraMasks, "#val");
+      if (path === "/favicon.ico") {
+        return ;
+      }
+      if (path === this._options.customUrl || path === this._options.metricPath) {
+        return ;
+      }
 
-    const url = req.baseUrl;
-    const method = req.method;
+      const status = normalizeStatusCode(res.statusCode);
+      const labels = { method, status, path };
 
-    // ignore favicon
-    if (url == '/favicon.ico') {
-      next();
-      return ;
-    }
-
-    // ignore metrics itself
-    // TODO: need improvment to check correctly our current controller
-    if (url.match(/\/metrics(\?.*?)?$/)) {
-      next();
-      return ;
-    }
-
-    const labelValues = {
-      method,
-      path: url,
-    };
-
-    this._counter.inc(labelValues, 1);
-
-    next();
+      this._requestsTotal.inc(labels);
+      this._requestsDuration.observe(labels, time / 1000);
+    })(req, res, next);
   }
 }

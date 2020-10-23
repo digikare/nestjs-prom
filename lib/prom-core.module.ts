@@ -2,6 +2,9 @@ import {
   Global,
   DynamicModule,
   Module,
+  NestModule,
+  MiddlewareConsumer,
+  Inject,
 } from '@nestjs/common';
 import { PromModuleOptions } from './interfaces';
 import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
@@ -9,10 +12,12 @@ import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from 
 import * as client from 'prom-client';
 import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
 import { getRegistryName } from './common/prom.utils';
+import { InboundMiddleware } from './middleware';
+import { PromService } from './prom.service';
 
 @Global()
 @Module({})
-export class PromCoreModule {
+export class PromCoreModule implements NestModule {
 
   static forRoot(
     options: PromModuleOptions = {},
@@ -49,7 +54,7 @@ export class PromCoreModule {
 
         // clear here for HMR support
         registry.clear();
-        
+
         if (options.defaultLabels) {
           registry.setDefaultLabels(options.defaultLabels)
         }
@@ -75,10 +80,22 @@ export class PromCoreModule {
         promRegistryNameProvider,
         promRegistryOptionsProvider,
         registryProvider,
+        PromService,
       ],
       exports: [
         registryProvider,
+        PromService,
       ],
     };
+  }
+
+  constructor(
+    @Inject(DEFAULT_PROM_OPTIONS) private readonly options: PromModuleOptions
+  ) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    if (this.options.withHttpMiddleware?.enable === true) {
+      consumer.apply(InboundMiddleware).forRoutes('*');
+    }
   }
 }

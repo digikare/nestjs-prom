@@ -1,4 +1,3 @@
-
 export interface PromModuleOptions {
   [key: string]: any;
 
@@ -15,15 +14,32 @@ export interface PromModuleOptions {
   withDefaultController?: boolean;
 
   /**
-   * Create automatically http_requests_total counter
+   * Middleware http
+   *
+   * Set enable = true to create automatically http_requests_total counter and http_requests_duration_seconds histogram
    */
-  useHttpCounterMiddleware?: boolean;
+  withHttpMiddleware?: {
 
-  /**
-   * Eanble or not the global interceptor
-   * Usefull to catch exception thrown by your app
-   */
-  withGlobalInterceptor?: boolean;
+    /**
+     * Enable the middleware http
+     *
+     * @type {boolean}
+     * @default false
+     */
+    enable?: boolean;
+
+    /**
+     * Buckets for requests duration seconds histogram
+     *
+     * @default '[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10]'
+     */
+    timeBuckets?: Array<number>;
+
+    /**
+     * Additional masks for requests paths normalization
+     */
+    pathNormalizationExtraMasks?: Array<RegExp>;
+  };
 
   registryName?: string;
   prefix?: string;
@@ -35,5 +51,16 @@ export interface PromModuleOptions {
     [key: string]: string|number,
   };
 
+  /**
+   * @deprecated Please use metricPath
+   * @see metricPath
+   */
   customUrl?: string;
+
+  /**
+   * The metric path to use
+   *
+   * @default /metrics
+   */
+  metricPath?: string;
 }

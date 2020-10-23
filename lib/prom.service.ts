@@ -6,7 +6,7 @@ import {
   findOrCreateSummary,
   getDefaultRegistry,
 } from './common/prom.utils';
-import { IMetricArguments } from './interfaces';
+import { IHistogramMetricArguments, IMetricArguments } from './interfaces';
 
 @Injectable()
 export class PromService {
@@ -27,7 +27,7 @@ export class PromService {
     return this.getGauge({ name: name });
   }
 
-  getHistogram(args: IMetricArguments) {
+  getHistogram(args: IHistogramMetricArguments) {
     return findOrCreateHistogram(args);
   }
 

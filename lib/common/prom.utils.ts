@@ -7,6 +7,7 @@ import {
   HistogramMetric,
   SummaryMetric,
   Registry,
+  IHistogramMetricArguments,
 } from '../interfaces';
 
 type MetricType = 'Counter' | 'Gauge' | 'Histogram' | 'Summary';
@@ -42,19 +43,21 @@ export function getDefaultRegistry() {
   return client.register;
 }
 
-export const findOrCreateMetric = ({
+export function findOrCreateMetric({
   name,
   type,
   help,
   labelNames,
   registry,
+  buckets,
 }: {
   name: string;
   type: MetricType;
   help?: string;
   labelNames?: string[];
   registry?: Registry;
-}): GenericMetric => {
+  buckets?: number[];
+}): GenericMetric {
 
   const register = registry ?? getDefaultRegistry();
   let metric: GenericMetric = register.getSingleMetric(name);
@@ -77,6 +80,7 @@ export const findOrCreateMetric = ({
         name: name,
         help: help || `${name} ${type}`,
         labelNames,
+        buckets,
       });
     case "Summary":
       if (metric && metric instanceof client.Summary) {
@@ -100,62 +104,30 @@ export const findOrCreateMetric = ({
   }
 }
 
-export const findOrCreateCounter = ({
-  name,
-  help,
-  labelNames,
-  registry,
-}: IMetricArguments): CounterMetric => {
+export function findOrCreateCounter(args: IMetricArguments): CounterMetric {
   return findOrCreateMetric({
-    name,
-    help,
+    ...args,
     type: `Counter`,
-    labelNames,
-    registry,
   }) as CounterMetric;
 }
 
-export const findOrCreateGauge = ({
-  name,
-  help,
-  labelNames,
-  registry,
-}: IMetricArguments): GaugeMetric => {
+export function findOrCreateGauge(args: IMetricArguments): GaugeMetric {
   return findOrCreateMetric({
-    name,
-    help,
+    ...args,
     type: `Gauge`,
-    labelNames,
-    registry,
   }) as GaugeMetric;
 }
 
-export const findOrCreateHistogram = ({
-  name,
-  help,
-  labelNames,
-  registry,
-}: IMetricArguments): HistogramMetric => {
+export function findOrCreateHistogram(args: IHistogramMetricArguments): HistogramMetric {
   return findOrCreateMetric({
-    name,
-    help,
+    ...args,
     type: `Histogram`,
-    labelNames,
-    registry,
   }) as HistogramMetric;
 }
 
-export const findOrCreateSummary = ({
-  name,
-  help,
-  labelNames,
-  registry,
-}: IMetricArguments): SummaryMetric => {
+export function findOrCreateSummary(args: IMetricArguments): SummaryMetric {
   return findOrCreateMetric({
-    name,
-    help,
+    ...args,
     type: `Summary`,
-    labelNames,
-    registry,
   }) as SummaryMetric;
 }
