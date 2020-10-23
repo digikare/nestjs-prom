@@ -1,40 +1,32 @@
 import { Injectable, NestMiddleware } from "@nestjs/common";
-import { Counter } from "prom-client";
-import { InjectCounterMetric } from "../common";
+import { Counter, Histogram } from "prom-client";
+import * as responseTime from "response-time";
+
+import { InjectCounterMetric, InjectHistogramMetric } from "../common";
+import { InboundMiddlewareOptions } from "./inbound.middleware-options"
+import { normalizePath, normalizeStatusCode } from "./normalizers";
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
 
   constructor(
-    @InjectCounterMetric('http_requests_total') private readonly _counter: Counter<string>,
+    private readonly _options: InboundMiddlewareOptions,
+    @InjectCounterMetric('http_requests_total') private readonly _requestsTotal: Counter<string>,
+    @InjectHistogramMetric('http_requests_duration_seconds') private readonly _requestsDuration: Histogram<string>,
   ) {}
 
   use (req, res, next) {
+    responseTime((req, res, time) => {
+      const { url, method } = req;
+      const path = normalizePath(url, this._options.pathNormalizationExtraMasks, "#val");
 
-    const url = req.baseUrl;
-    const method = req.method;
+      if (path !== this._options.metricsPath && path !== "/favicon.ico") {
+        const status = normalizeStatusCode(res.statusCode);
+        const labels = { method, status, path };
 
-    // ignore favicon
-    if (url == '/favicon.ico') {
-      next();
-      return ;
-    }
-
-    // ignore metrics itself
-    // TODO: need improvment to check correctly our current controller
-    if (url.match(/\/metrics(\?.*?)?$/)) {
-      next();
-      return ;
-    }
-
-    const labelValues = {
-      method,
-      status: res.statusCode,
-      path: url,
-    };
-
-    this._counter.inc(labelValues, 1);
-
-    next();
+        this._requestsTotal.inc(labels);
+        this._requestsDuration.observe(labels, time / 1000);
+      }
+    })(req, res, next);
   }
 }

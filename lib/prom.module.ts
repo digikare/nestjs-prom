@@ -1,7 +1,8 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { PromCoreModule } from './prom-core.module';
-import { PromModuleOptions, MetricType, MetricTypeConfigurationInterface } from './interfaces';
+import { PromModuleOptions, MetricType, MetricTypeConfigurationInterface, RequestsMetricsOptions } from './interfaces';
 import { createPromCounterProvider, createPromGaugeProvider, createPromHistogramProvider, createPromSummaryProvider } from './prom.providers';
+import { InboundMiddlewareOptions } from "./middleware/inbound.middleware-options"
 import * as client from 'prom-client';
 import { PromController } from './prom.controller';
 import { PromService } from './prom.service';
@@ -16,6 +17,7 @@ export class PromModule {
     const {
       withDefaultController,
       useHttpCounterMiddleware,
+      requestsMetricsOptions: userRequestsMetricsOptions,
       ...promOptions
     } = options;
 
@@ -38,14 +40,29 @@ export class PromModule {
 
     // if want to use the http counter
     if (useHttpCounterMiddleware) {
-      const inboundProvider = createPromCounterProvider({
-        name: 'http_requests_total',
-        help: 'http_requests_total Number of inbound request',
-        labelNames: ['method', 'status', 'path']
-      });
+      const defaultRequestsMetricsOptions = { timeBuckets: client.exponentialBuckets(0.05, 1.75, 8), pathNormalizationExtraMasks: [] } as RequestsMetricsOptions;
+      const requestsMetricsOptions = userRequestsMetricsOptions ? { ...defaultRequestsMetricsOptions, ...userRequestsMetricsOptions } : defaultRequestsMetricsOptions; 
 
-      moduleForRoot.providers = [...moduleForRoot.providers , inboundProvider];
-      moduleForRoot.exports = [...moduleForRoot.exports, inboundProvider];
+      const additionalProviders = [
+        {
+          provide: InboundMiddlewareOptions,
+          useValue: new InboundMiddlewareOptions(options.customUrl || '/metrics', requestsMetricsOptions.pathNormalizationExtraMasks)
+        },
+        createPromCounterProvider({
+          name: "http_requests_total",
+          help: "http_requests_total Number of inbound request",
+          labelNames: ["method", "status", "path"]
+        }),
+        createPromHistogramProvider({
+          name: "http_requests_duration_seconds",
+          help: "Duration of HTTP requests in seconds",
+          labelNames: ["method", "status", "path"],
+          buckets: requestsMetricsOptions.timeBuckets
+        })
+      ];
+
+      moduleForRoot.providers = [...moduleForRoot.providers, ...additionalProviders];
+      moduleForRoot.exports = [...moduleForRoot.exports, ...additionalProviders];
     }
 
     return moduleForRoot;

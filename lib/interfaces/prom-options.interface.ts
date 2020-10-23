@@ -1,3 +1,5 @@
+import { RequestsMetricsOptions } from "./requests.metrics-options.interface"
+
 
 export interface PromModuleOptions {
   [key: string]: any;
@@ -15,9 +17,14 @@ export interface PromModuleOptions {
   withDefaultController?: boolean;
 
   /**
-   * Create automatically http_requests_total counter
+   * Create automatically http_requests_total counter and http_requests_duration_seconds histogram
    */
   useHttpCounterMiddleware?: boolean;
+
+  /**
+   * Requests metrics calculation option
+   */
+  requestsMetricsOptions?: RequestsMetricsOptions;
 
   registryName?: string;
   timeout?: number;

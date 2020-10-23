@@ -11,6 +11,9 @@ import { InboundMiddleware } from '../../lib/middleware/inbound.middleware';
         app: 'v1.0.0',
       },
       useHttpCounterMiddleware: true,
+      requestsMetricsOptions: {
+        timeBuckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10]
+      }
     }),
     PromModule.forMetrics([
       {
@@ -29,10 +32,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(InboundMiddleware)
-      .exclude({
-        path: '/metrics',
-        method: RequestMethod.GET,
-      })
       .forRoutes('*');
   }
 }
