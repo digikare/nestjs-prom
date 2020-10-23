@@ -1,6 +1,6 @@
 import { Inject, Injectable, NestMiddleware } from "@nestjs/common";
 import { PromService } from '../prom.service';
-import { Counter, Histogram } from 'prom-client';
+import { Histogram } from 'prom-client';
 import * as responseTime from "response-time";
 import { DEFAULT_PROM_OPTIONS } from '../prom.constants';
 import { PromModuleOptions } from '../interfaces';
