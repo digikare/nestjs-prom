@@ -211,13 +211,14 @@ the moment.
 
 ### PromModule.forRoot() options
 
-|Option|type|description|
-|---|---|---|
-|withDefaultsMetrics|boolean (default: true)|enable defaultMetrics provided by prom-client|
-|withDefaultController|boolean (default: true)|add internal controller to expose /metrics endpoints|
-|withHttpMiddleware|object|To enable the http middleware for http metrics|
-|withHttpMiddleware.enable|boolean (default: false)|Enable http middleware|
-|withHttpMiddleware.timeBuckets|number[] (default: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10])|The time buckets wanted|
+|Option|Type|Default|Description|
+|---|---|---|---|
+|metricPath|string|`/metrics`|Path to use to service metrics|
+|withDefaultsMetrics|boolean|`true`|enable defaultMetrics provided by prom-client|
+|withDefaultController|boolean|`true`|add internal controller to expose /metrics endpoints|
+|withHttpMiddleware|object|`{}`|To enable the http middleware for http metrics|
+|withHttpMiddleware.enable|boolean|`false`|Enable http middleware|
+|withHttpMiddleware.timeBuckets|number[]|`[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10]`|The time buckets wanted|
 |withHttpMiddleware.pathNormalizationExtraMasks|RegEx[]| `[]` |The regexp mask for normalization|
 
 ### Decorators
