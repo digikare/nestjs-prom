@@ -41,13 +41,36 @@ Here the options available for PromModule.forRoot:
 
 |Option|Type|Default|Description|
 |---|---|---|---|
+|defaultLabels|Object<string, string|number>|`{}`|The defaults labels to set|
 |metricPath|string|`/metrics`|Path to use to service metrics|
 |withDefaultsMetrics|boolean|`true`|enable defaultMetrics provided by prom-client|
 |withDefaultController|boolean|`true`|add internal controller to expose /metrics endpoints|
-|withHttpMiddleware|object|`{}`|To enable the http middleware for http metrics|
-|withHttpMiddleware.enable|boolean|`false`|Enable http middleware|
+|withHttpMiddleware|object|`{}`|Tttp middleware options for http requests metrics|
+|withHttpMiddleware.enable|boolean|`false`|Enable the middleware for http requests|
 |withHttpMiddleware.timeBuckets|number[]|`[0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 10]`|The time buckets wanted|
 |withHttpMiddleware.pathNormalizationExtraMasks|RegEx[]| `[]` |The regexp mask for normalization|
+
+### Http requests
+
+To track the http requests metrics, simply set  `withHttpMiddleware.enable = true`
+
+By default, this feature is disabled.
+
+```typescript
+import { Module } from '@nestjs/common';
+import { PromModule } from '@digikare/nestjs-prom';
+
+@Module({
+  imports: [
+    PromModule.forRoot({
+      withHttpMiddleware: {
+        enable: true,
+      }
+    }),
+  ]
+})
+export class ApplicationModule {}
+```
 
 ### Setup metric
 
@@ -213,6 +236,7 @@ the moment.
 
 |Option|Type|Default|Description|
 |---|---|---|---|
+|defaultLabels|Object<string, string|number>|`{}`|The defaults labels to set|
 |metricPath|string|`/metrics`|Path to use to service metrics|
 |withDefaultsMetrics|boolean|`true`|enable defaultMetrics provided by prom-client|
 |withDefaultController|boolean|`true`|add internal controller to expose /metrics endpoints|
