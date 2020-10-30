@@ -63,5 +63,8 @@
     "Ashleigh Simonelli @bashleigh",
     "@blackkopcap",
     "@litichevskiydv"
-  ]
+  ],
+  "publishConfig": {
+    "tag": "next"
+  }
 }
