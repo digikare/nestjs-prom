@@ -76,12 +76,15 @@ export function findOrCreateMetric({
       if (metric && metric instanceof client.Histogram) {
         return metric;
       }
-      return new client.Histogram({
+      const histogramConfig = {
         name: name,
         help: help || `${name} ${type}`,
         labelNames,
-        buckets,
-      });
+      };
+      if (buckets) {
+        histogramConfig['buckets'] = buckets;
+      }
+      return new client.Histogram(histogramConfig);
     case "Summary":
       if (metric && metric instanceof client.Summary) {
         return metric;
