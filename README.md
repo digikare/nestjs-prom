@@ -117,7 +117,7 @@ You have the following decorators:
 Below how to use it
 
 ```typescript
-import { CounterMetric, PromCounter } from '@digikare/nest-prom';
+import { CounterMetric, PromCounter } from '@digikare/nestjs-prom';
 
 @Controller()
 export class AppController {
@@ -141,7 +141,7 @@ export class AppController {
 ```
 
 ```typescript
-import { GaugeMetric, PromGauge } from '@digikare/nest-prom';
+import { GaugeMetric, PromGauge } from '@digikare/nestjs-prom';
 
 @Controller()
 export class AppController {
