@@ -7,7 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { PromModuleOptions } from './interfaces';
-import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
+import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS, PROM_PUSHGATEWAY } from './prom.constants';
 
 import * as client from 'prom-client';
 import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
@@ -25,6 +25,7 @@ export class PromCoreModule implements NestModule {
 
     const {
       withDefaultsMetrics,
+      pushgateway,
       registryName,
       prefix,
     } = options;
@@ -41,6 +42,16 @@ export class PromCoreModule implements NestModule {
     const promRegistryOptionsProvider = {
       provide: DEFAULT_PROM_OPTIONS,
       useValue: options,
+    }
+
+    const pushgatewayProvider = {
+        provide: PROM_PUSHGATEWAY,
+        useFactory: (): client.Pushgateway => {
+            if (pushgateway) {
+                return new client.Pushgateway(pushgateway);
+            }
+            return null;
+        }
     }
 
     const registryProvider = {
@@ -80,6 +91,7 @@ export class PromCoreModule implements NestModule {
         promRegistryNameProvider,
         promRegistryOptionsProvider,
         registryProvider,
+        pushgatewayProvider,
         PromService,
       ],
       exports: [
