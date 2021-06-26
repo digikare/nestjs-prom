@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { Pushgateway } from 'prom-client';
 import {
   findOrCreateCounter,
   findOrCreateGauge,
@@ -7,9 +8,19 @@ import {
   getDefaultRegistry,
 } from './common/prom.utils';
 import { IHistogramMetricArguments, IMetricArguments } from './interfaces';
+import { PROM_PUSHGATEWAY } from './prom.constants';
 
 @Injectable()
 export class PromService {
+
+  constructor(
+      @Inject(PROM_PUSHGATEWAY)
+      private readonly pushgateway: Pushgateway
+  ) {}
+
+  getPushgateway() {
+      return this.pushgateway;
+  }
 
   getCounter(args: IMetricArguments) {
     return findOrCreateCounter(args);

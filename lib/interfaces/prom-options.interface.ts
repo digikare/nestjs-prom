@@ -63,4 +63,10 @@ export interface PromModuleOptions {
    * @default /metrics
    */
   metricPath?: string;
+
+  /**
+   * Pushgateway address
+   * 
+   */
+  pushgateway?: string;
 }
