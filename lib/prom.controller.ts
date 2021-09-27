@@ -1,6 +1,6 @@
 import { Controller, Get, Header } from "@nestjs/common";
-import * as client from 'prom-client';
 import { PATH_METADATA } from '@nestjs/common/constants';
+import * as client from 'prom-client';
 
 @Controller()
 export class PromController {

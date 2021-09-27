@@ -1,5 +1,5 @@
 {
-  "name": "@digikare/nestjs-prom",
+  "name": "@khaledez/nestjs-prom",
   "version": "1.0.0",
   "description": "A promotheus module for nestjs",
   "main": "dist/index.js",
@@ -19,36 +19,35 @@
   "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
   "license": "MIT",
   "devDependencies": {
-    "@nestjs/common": "^7.0.0",
-    "@nestjs/core": "^7.0.0",
+    "@nestjs/common": "^7.0.1",
+    "@nestjs/core": "^7.0.1",
     "@nestjs/platform-express": "^7.3.2",
-    "@types/jest": "^26.0.7",
+    "@types/jest": "^27.0.0",
     "@types/node": "^12.12.53",
     "@types/response-time": "^2.3.4",
     "@types/supertest": "^2.0.10",
-    "jest": "^26.1.0",
+    "jest": "^27.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.6.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^26.1.4",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.9.7"
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   },
   "peerDependencies": {
-    "@nestjs/common": "^6.0.0 || ^7.0.0",
-    "@nestjs/core": "^6.0.0 || ^7.0.0",
+    "@nestjs/common": "^7.0.1 || ^8.0.6",
+    "@nestjs/core": "^7.0.1 || ^8.0.6",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^6.0.0"
   },
   "dependencies": {
     "@nestjs/testing": "^7.3.2",
-    "prom-client": "^12.0.0",
+    "prom-client": "^13.2.0",
     "response-time": "^2.3.2",
     "url-value-parser": "^2.0.1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digikare/nestjs-prom.git"
+    "url": "git+https://github.com/khaledez/nestjs-prom.git"
   },
   "keywords": [
     "nestjs",

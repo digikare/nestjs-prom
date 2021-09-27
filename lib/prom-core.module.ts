@@ -1,19 +1,15 @@
 import {
-  Global,
-  DynamicModule,
-  Module,
-  NestModule,
-  MiddlewareConsumer,
-  Inject,
+  DynamicModule, Global, Inject, MiddlewareConsumer, Module,
+  NestModule
 } from '@nestjs/common';
-import { PromModuleOptions } from './interfaces';
-import { DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME, DEFAULT_PROM_OPTIONS } from './prom.constants';
-
 import * as client from 'prom-client';
-import { Registry, collectDefaultMetrics, DefaultMetricsCollectorConfiguration } from 'prom-client';
+import { collectDefaultMetrics, DefaultMetricsCollectorConfiguration, Registry } from 'prom-client';
 import { getRegistryName } from './common/prom.utils';
+import { PromModuleOptions } from './interfaces';
 import { InboundMiddleware } from './middleware';
+import { DEFAULT_PROM_OPTIONS, DEFAULT_PROM_REGISTRY, PROM_REGISTRY_NAME } from './prom.constants';
 import { PromService } from './prom.service';
+
 
 @Global()
 @Module({})

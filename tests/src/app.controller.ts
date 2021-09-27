@@ -1,12 +1,8 @@
-import { Get, Controller, HttpStatus, HttpException } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import {
-  CounterMetric,
-  PromMethodCounter,
-  PromInstanceCounter,
-  PromCounter,
-  PromService, PromGauge, GaugeMetric,
+  CounterMetric, GaugeMetric, PromCounter, PromGauge, PromInstanceCounter, PromMethodCounter, PromService
 } from '../../lib';
+import { AppService } from './app.service';
 
 @PromInstanceCounter()
 class MyObj {
