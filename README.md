@@ -2,16 +2,12 @@
 
 A prometheus module for Nest.
 
-__BREAKING CHANGE__
-
-> nestjs-prom v0.2.x has been moved to [stable/0.2](https://github.com/digikare/nestjs-prom/tree/stable/0.2) branch.
->
-> To migrate from v0.2 to v1.x please see [Migrate from 0.2.x to 1.x](./doc/migrate_0.2_1.x.md)
+This is an updated fork from `@digikare/nestjs-prom`!
 
 ## Installation
 
 ```bash
-$ npm install --save @digikare/nestjs-prom prom-client
+$ npm install --save @khaledez/nestjs-prom prom-client
 ```
 
 ## How to use
@@ -20,7 +16,7 @@ Import `PromModule` into the root `ApplicationModule`
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { PromModule } from '@digikare/nestjs-prom';
+import { PromModule } from '@khaledez/nestjs-prom';
 
 @Module({
   imports: [
