@@ -1,9 +1,9 @@
-import { Module, DynamicModule } from '@nestjs/common';
-import { PromCoreModule } from './prom-core.module';
-import { PromModuleOptions } from './interfaces';
-import { PromController } from './prom.controller';
+import { DynamicModule, Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { PromModuleOptions } from './interfaces';
 import { PromCatchAllExceptionsFilter } from './prom-catch-all.exception-filter';
+import { PromCoreModule } from './prom-core.module';
+import { PromController } from './prom.controller';
 
 @Module({})
 export class PromModule {
