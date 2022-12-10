@@ -21,7 +21,7 @@
   "devDependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
-    "@nestjs/platform-express": "^7.3.2",
+    "@nestjs/platform-express": "^9.2.1",
     "@types/jest": "^26.0.7",
     "@types/node": "^12.12.53",
     "@types/response-time": "^2.3.4",
