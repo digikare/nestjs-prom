@@ -47,7 +47,7 @@ export function findOrCreateMetric({
   name,
   type,
   help,
-  labelNames,
+  labelNames = [],
   registry,
   buckets,
 }: {
@@ -58,12 +58,11 @@ export function findOrCreateMetric({
   registry?: Registry;
   buckets?: number[];
 }): GenericMetric {
-
   const register = registry ?? getDefaultRegistry();
   let metric: GenericMetric = register.getSingleMetric(name);
 
   switch (type) {
-    case "Gauge":
+    case 'Gauge':
       if (metric && metric instanceof client.Gauge) {
         return metric;
       }
@@ -72,7 +71,7 @@ export function findOrCreateMetric({
         help: help || `${name} ${type}`,
         labelNames,
       });
-    case "Histogram":
+    case 'Histogram':
       if (metric && metric instanceof client.Histogram) {
         return metric;
       }
@@ -85,7 +84,7 @@ export function findOrCreateMetric({
         histogramConfig['buckets'] = buckets;
       }
       return new client.Histogram(histogramConfig);
-    case "Summary":
+    case 'Summary':
       if (metric && metric instanceof client.Summary) {
         return metric;
       }
@@ -94,7 +93,7 @@ export function findOrCreateMetric({
         help: help || `${name} ${type}`,
         labelNames,
       });
-    case "Counter":
+    case 'Counter':
     default:
       if (metric && metric instanceof client.Counter) {
         return metric;
@@ -121,7 +120,9 @@ export function findOrCreateGauge(args: IMetricArguments): GaugeMetric {
   }) as GaugeMetric;
 }
 
-export function findOrCreateHistogram(args: IHistogramMetricArguments): HistogramMetric {
+export function findOrCreateHistogram(
+  args: IHistogramMetricArguments,
+): HistogramMetric {
   return findOrCreateMetric({
     ...args,
     type: `Histogram`,
