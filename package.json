@@ -19,30 +19,23 @@
   "author": "Tieu-Philippe KHIM <pkhim@digikare.com>",
   "license": "MIT",
   "devDependencies": {
-    "@nestjs/common": "^7.0.0",
-    "@nestjs/core": "^7.0.0",
-    "@nestjs/platform-express": "^7.3.2",
-    "@types/jest": "^26.0.7",
-    "@types/node": "^12.12.53",
+    "@nestjs/common": "^9.0.5",
+    "@nestjs/core": "^9.0.5",
+    "@nestjs/platform-express": "^9.0.5",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^16.11.7",
     "@types/response-time": "^2.3.4",
     "@types/supertest": "^2.0.10",
-    "jest": "^26.1.0",
+    "jest": "^27.5.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.6.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^26.1.4",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.9.7"
-  },
-  "peerDependencies": {
-    "@nestjs/common": "^6.0.0 || ^7.0.0",
-    "@nestjs/core": "^6.0.0 || ^7.0.0",
-    "reflect-metadata": "^0.1.12",
-    "rxjs": "^6.0.0"
+    "ts-jest": "^27.1.4",
+    "ts-node": "~10.8.0",
+    "typescript": "~4.7.2"
   },
   "dependencies": {
-    "@nestjs/testing": "^7.3.2",
-    "prom-client": "^12.0.0",
+    "@nestjs/testing": "^9.0.7",
+    "prom-client": "^14.1.0",
     "response-time": "^2.3.2",
     "url-value-parser": "^2.0.1"
   },
