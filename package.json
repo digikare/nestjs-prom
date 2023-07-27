@@ -1,5 +1,5 @@
 {
-  "name": "@digikare/nestjs-prom",
+  "name": "@marbletech/nestjs-prom",
   "version": "1.0.0",
   "description": "A promotheus module for nestjs",
   "main": "dist/index.js",
