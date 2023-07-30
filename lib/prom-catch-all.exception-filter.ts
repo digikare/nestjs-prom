@@ -9,6 +9,7 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { CounterMetric, PromModuleOptions } from './interfaces';
 import { normalizeRoute } from './utils';
 import { PromService } from './prom.service';
+import { DEFAULT_PROM_OPTIONS } from './prom.constants';
 
 function getBaseUrl(url?: string) {
   if (!url) {
@@ -25,7 +26,10 @@ function getBaseUrl(url?: string) {
 export class PromCatchAllExceptionsFilter extends BaseExceptionFilter {
   private readonly _counter: CounterMetric;
 
-  constructor(promService: PromService) {
+  constructor(
+    promService: PromService,
+    @Inject(DEFAULT_PROM_OPTIONS) private readonly _options: PromModuleOptions,
+  ) {
     super();
 
     this._counter = promService.getCounter({
@@ -42,7 +46,7 @@ export class PromCatchAllExceptionsFilter extends BaseExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const path = normalizeRoute(request);
+    const path = normalizeRoute(request, this._options.includeQueryParams);
 
     this._counter.inc({
       method: request.method,

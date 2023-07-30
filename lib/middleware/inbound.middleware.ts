@@ -4,7 +4,7 @@ import { Histogram } from 'prom-client';
 import * as responseTime from 'response-time';
 import { DEFAULT_PROM_OPTIONS } from '../prom.constants';
 import { PromModuleOptions } from '../interfaces';
-import { normalizeRoute, normalizeStatusCode } from '../utils';
+import { normalizeRoute } from '../utils';
 
 @Injectable()
 export class InboundMiddleware implements NestMiddleware {
@@ -30,7 +30,7 @@ export class InboundMiddleware implements NestMiddleware {
   use(req, res, next) {
     responseTime((req, res, time) => {
       const { url, method } = req;
-      const path = normalizeRoute(req);
+      const path = normalizeRoute(req, this._options.includeQueryParams);
       if (path === '/favicon.ico') {
         return;
       }
@@ -41,7 +41,7 @@ export class InboundMiddleware implements NestMiddleware {
         return;
       }
 
-      const status = normalizeStatusCode(res.statusCode);
+      const status = res.statusCode;
       const labels = { method, status, path };
 
       this._histogram.observe(labels, time / 1000);

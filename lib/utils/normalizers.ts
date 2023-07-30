@@ -19,7 +19,7 @@ export function normalizeStatusCode(statusCode: number): string {
   return '5XX';
 }
 
-export function normalizeRoute(req): string {
+export function normalizeRoute(req,includeQueryParams = false): string {
   let normalizedRoutePath = req.baseUrl;
   let endpointRoutePath = req.route.path;
 
@@ -57,6 +57,13 @@ export function normalizeRoute(req): string {
       const routeIndex = splittedUrl.length - splittedRoute.length + 1;
       const baseUrl = splittedUrl.slice(0, routeIndex).join('/');
       normalizedRoutePath = baseUrl + normalizedRoutePath;
+    }
+
+    if (includeQueryParams === true && Object.keys(req.query).length > 0) {
+      normalizedRoutePath = `${normalizedRoutePath}?${Object.keys(req.query)
+        .sort()
+        .map((queryParam) => `${queryParam}=<?>`)
+        .join('&')}`;
     }
   }
   // nest.js - build request url pattern if exists params
