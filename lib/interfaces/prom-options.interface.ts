@@ -8,6 +8,11 @@ export interface PromModuleOptions {
   withDefaultsMetrics?: boolean;
 
   /**
+   * Include query params in the metrics
+   */
+  includeQueryParams?: boolean;
+
+  /**
    * Enable internal controller to expose /metrics
    * Caution: If you have a global prefix, don't forget to prefix it in prom
    */
@@ -19,7 +24,6 @@ export interface PromModuleOptions {
    * Set enable = true to create automatically http_requests_total counter and http_requests_duration_seconds histogram
    */
   withHttpMiddleware?: {
-
     /**
      * Enable the middleware http
      *
@@ -48,7 +52,7 @@ export interface PromModuleOptions {
    * Set the defaults labels
    */
   defaultLabels?: {
-    [key: string]: string|number,
+    [key: string]: string | number;
   };
 
   /**
