@@ -21,9 +21,10 @@ export function normalizeStatusCode(statusCode: number): string {
 
 export function normalizeRoute(req,includeQueryParams = false): string {
   let normalizedRoutePath = req.baseUrl;
-  let endpointRoutePath = req.route.path;
+
 
   if (req.route) {
+    let endpointRoutePath = req.route.path;
     if (endpointRoutePath == '/*') {
       // that means the requested route doesn't exist
       return 'unknown';
